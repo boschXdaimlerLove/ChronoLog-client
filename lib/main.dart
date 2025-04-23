@@ -16,12 +16,13 @@ class ChronoLogApp extends StatefulWidget {
 class _ChronoLogAppState extends State<ChronoLogApp> {
   @override
   void initState() {
-    /*Translation.init(
+    /*
+    Translation.init(
       supportedLocales: {TranslationLocales.english, TranslationLocales.german},
       defaultLocale: TranslationLocales.english,
       translations: translations,
     );
-    */
+     */
     super.initState();
   }
 
