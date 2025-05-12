@@ -13,6 +13,22 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: "BBQ Working Time Management",
     TranslationLocales.german: "BBQ Arbeitszeit Management",
   },
+  "Login": {
+    TranslationLocales.english: "Login",
+    TranslationLocales.german: "Einloggen",
+  },
+  "Log into your BBQ work account": {
+    TranslationLocales.english: "Log into your BBQ work account",
+    TranslationLocales.german: "Logge dich bei deinem BBQ Arbeitsaccount ein",
+  },
+  "Username": {
+    TranslationLocales.english: "Username",
+    TranslationLocales.german: "Username",
+  },
+  "Password": {
+    TranslationLocales.english: "Password",
+    TranslationLocales.german: "Passwort",
+  },
 };
 
 HashMap<String, Map<Locale, String>> get translations {
