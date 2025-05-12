@@ -15,8 +15,8 @@ Map<String, Map<Locale, String>> _translations = {
   },
 };
 
-HashMap<String, HashMap<Locale, String>> get translations {
-  HashMap<String, HashMap<Locale, String>> local = HashMap.from(_translations);
+HashMap<String, Map<Locale, String>> get translations {
+  HashMap<String, Map<Locale, String>> local = HashMap.from(_translations);
   local.addAll(HashMap.from(StandardTranslations.all));
   return local;
 }

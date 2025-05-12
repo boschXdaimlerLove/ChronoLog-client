@@ -1,4 +1,5 @@
-import 'package:chrono_log/calendar_list_view.dart';
+import 'package:chrono_log/translations.dart';
+import 'package:chrono_log/views/calendar/calendar_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart';
 
@@ -6,29 +7,43 @@ void main() {
   runApp(const ChronoLogApp());
 }
 
-class ChronoLogApp extends StatefulWidget {
+final class ChronoLogApp extends StatefulWidget {
   const ChronoLogApp({super.key});
 
   @override
   State<ChronoLogApp> createState() => _ChronoLogAppState();
 }
 
-class _ChronoLogAppState extends State<ChronoLogApp> {
+final class _ChronoLogAppState extends State<ChronoLogApp> {
   @override
   void initState() {
-    /*
     Translation.init(
       supportedLocales: {TranslationLocales.english, TranslationLocales.german},
       defaultLocale: TranslationLocales.english,
       translations: translations,
     );
-     */
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // Locales
+      localizationsDelegates: TranslationDelegates.localizationDelegates,
+      locale: Translation.activeLocale,
+      supportedLocales: Translation.supportedLocales,
+
+      // Debug
+      debugShowMaterialGrid: false,
+      showSemanticsDebugger: false,
+      showPerformanceOverlay: false,
+      checkerboardRasterCacheImages: false,
+      checkerboardOffscreenLayers: false,
+      debugShowCheckedModeBanner: true,
+
+      // General
+      scrollBehavior: const MaterialScrollBehavior(),
+
       home: Scaffold(
         appBar: AppBar(title: Text("BBQ Working Time Management".tr())),
         body: Padding(
@@ -45,14 +60,14 @@ class _ChronoLogAppState extends State<ChronoLogApp> {
                   children: [Text("No unread messages".tr())],
                 ),
               ),
-              Flexible(
-                fit: FlexFit.tight,
-                flex: 10,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [Center(child: CalendarListView())],
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: VerticalDivider(thickness: 1.5),
+              ),
+              Flexible(flex: 12, child: CalendarListView()),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: VerticalDivider(thickness: 1.5),
               ),
               Flexible(
                 fit: FlexFit.tight,
@@ -62,25 +77,42 @@ class _ChronoLogAppState extends State<ChronoLogApp> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          Translation.changeLanguage(
-                            TranslationLocales.english,
+                    SizedBox(
+                      height: 100,
+                      width: 200,
+                      child: TextButton(
+                        onPressed: () {
+                          setState(
+                            () => Translation.changeLanguage(
+                              TranslationLocales.english,
+                            ),
                           );
-                        });
-                      },
-                      child: Text("🇺🇸"),
+                        },
+                        child: Text("🇬🇧", style: TextStyle(fontSize: 48)),
+                      ),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          Translation.changeLanguage(TranslationLocales.german);
-                        });
-                      },
-                      child: Text("🇩🇪"),
+                    SizedBox(
+                      height: 100,
+                      width: 200,
+                      child: TextButton(
+                        onPressed: () {
+                          setState(
+                            () => Translation.changeLanguage(
+                              TranslationLocales.german,
+                            ),
+                          );
+                        },
+                        child: Text("🇩🇪", style: TextStyle(fontSize: 48)),
+                      ),
                     ),
-                    TextButton(onPressed: () {}, child: Icon(Icons.settings)),
+                    SizedBox(
+                      height: 100,
+                      width: 200,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Center(child: Icon(Icons.settings, size: 48)),
+                      ),
+                    ),
                   ],
                 ),
               ),
