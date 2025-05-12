@@ -55,7 +55,7 @@ final class _LoginViewState extends State<LoginView> {
                   vertical: 16,
                 ),
                 child: TextField(
-                  onSubmitted: (username) {},
+                  onSubmitted: (username) => this.username = username,
                   enableIMEPersonalizedLearning: false,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
@@ -74,7 +74,7 @@ final class _LoginViewState extends State<LoginView> {
                   vertical: 16,
                 ),
                 child: TextField(
-                  onSubmitted: (password) {},
+                  onSubmitted: (password) => this.password = password,
                   keyboardType: TextInputType.text,
                   obscureText: true,
                   obscuringCharacter: '*',

@@ -1,17 +1,18 @@
+import 'package:chrono_log/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart'
     show Translate, Translation, TranslationLocales;
 
 import 'calendar/calendar_list_view.dart';
 
-class Homescreen extends StatefulWidget {
+final class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
 
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
-class _HomescreenState extends State<Homescreen> {
+final class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +28,12 @@ class _HomescreenState extends State<Homescreen> {
             ),
             Text("BBQ Working Time Management".tr()),
           ],
+        ),
+        leading: TextButton(
+          onPressed: () {
+            // TODO: implement logout method
+          },
+          child: Row(children: [Icon(Icons.arrow_back), Text("Logout".tr())]),
         ),
         actions: [
           Padding(
@@ -53,7 +60,10 @@ class _HomescreenState extends State<Homescreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: IconButton(
-              onPressed: () {},
+              onPressed:
+                  () => Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (_) => SettingsScreen())),
               icon: Icon(Icons.settings, color: Colors.black),
             ),
           ),
