@@ -108,10 +108,20 @@ final class _LoginViewState extends State<LoginView> {
     );
   }
 
-  void login() {
-    // TODO: implement login
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (_) => Homescreen()));
+  void login() async {
+    //bool correct = await ServerCommunication.login(username, password);
+    // TODO: update
+    //if (correct) {
+    if (true) {
+      if (mounted) {
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (_) => Homescreen()));
+      } else {
+        // TODO: handle unmounted error
+      }
+    } else {
+      // TODO: show dialog
+    }
   }
 }

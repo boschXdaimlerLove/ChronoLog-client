@@ -89,7 +89,29 @@ final class _HomescreenState extends State<Homescreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: VerticalDivider(thickness: 1.5),
             ),
-            Flexible(flex: 8, child: CalendarListView()),
+            Flexible(
+              flex: 8,
+              child: Column(
+                children: [
+                  Flexible(child: CalendarListView()),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      // TODO: update text to end work
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text("Start Work"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

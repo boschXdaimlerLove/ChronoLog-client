@@ -1,3 +1,6 @@
+import 'package:chrono_log/errors/cross_day_time_frame_error.dart';
+import 'package:chrono_log/errors/time_frame_json_format_error.dart';
+
 final class TimeFrame {
   DateTime start;
   DateTime end;
@@ -6,7 +9,7 @@ final class TimeFrame {
     if (start.year != end.year ||
         start.month != end.month ||
         start.day != end.day) {
-      // TODO: throw error
+      throw CrossDayTimeFrameError();
     }
   }
 
@@ -16,8 +19,7 @@ final class TimeFrame {
         DateTime.parse(startTime),
         DateTime.parse(endTime),
       ),
-      // TODO: update exception
-      _ => throw Exception(),
+      _ => throw TimeFrameJsonFormatError(),
     };
   }
 

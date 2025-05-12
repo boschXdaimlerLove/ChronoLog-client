@@ -6,14 +6,16 @@ import 'package:http/http.dart' as http show get, post, put, Response;
 
 /// Communicates with the backend server via API calls
 final class ServerCommunication {
-  static void login(String username, String password) {
-    http.post(
+  static Future<bool> login(String username, String password) async {
+    await http.post(
       Uri.parse(APICalls.getLoginAPICall()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({'username': username, 'password': password}),
     );
+    // TODO: handle response
+    return true;
   }
 
   static void startWork() {

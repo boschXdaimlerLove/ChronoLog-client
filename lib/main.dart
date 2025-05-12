@@ -1,8 +1,9 @@
 import 'package:chrono_log/translations.dart';
 import 'package:chrono_log/views/login_view.dart';
 import 'package:flutter/material.dart';
-import 'package:modern_themes/modern_themes.dart';
-import 'package:string_translate/string_translate.dart';
+import 'package:modern_themes/modern_themes.dart' show Themes;
+import 'package:string_translate/string_translate.dart'
+    hide StandardTranslations;
 
 void main() {
   runApp(const ChronoLogApp());
@@ -49,7 +50,9 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
 
       // General
       scrollBehavior: const MaterialScrollBehavior(),
+      title: "BBQ Worktime Management",
 
+      // Screens
       home: LoginView(),
     );
   }
