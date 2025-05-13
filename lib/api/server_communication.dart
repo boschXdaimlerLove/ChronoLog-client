@@ -17,14 +17,7 @@ final class ServerCommunication {
     };
   }
 
-  static Future<bool> login(
-    final String username,
-    final String password,
-  ) async {
-    final http.Response response = await http.post(
-      Uri.parse(APICalls.getLoginAPICall()),
-      headers: getHeaders(username, password),
-    );
+  static bool handleResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
         // Ok
@@ -47,13 +40,24 @@ final class ServerCommunication {
     }
   }
 
+  static Future<bool> login(
+    final String username,
+    final String password,
+  ) async {
+    final http.Response response = await http.post(
+      Uri.parse(APICalls.getLoginAPICall()),
+      headers: getHeaders(username, password),
+    );
+    return handleResponse(response);
+  }
+
   static void startWork(final String username, final String password) async {
     final http.Response response = await http.post(
       Uri.parse(APICalls.getStartTimeAPICall()),
       headers: getHeaders(username, password),
       body: jsonEncode({'start': DateTime.now().toIso8601String()}),
     );
-    // TODO: handle response
+    handleResponse(response);
   }
 
   static void endWork(final String username, final String password) async {
@@ -62,7 +66,7 @@ final class ServerCommunication {
       headers: getHeaders(username, password),
       body: jsonEncode({'start': DateTime.now().toIso8601String()}),
     );
-    // TODO: handle response
+    handleResponse(response);
   }
 
   static List<TimeFrame> getTimes(
