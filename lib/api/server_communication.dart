@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:convert' show base64, jsonEncode, utf8;
 
 import 'package:chrono_log/api/api_calls.dart';
 import 'package:chrono_log/models/time_frame.dart';
@@ -6,39 +6,69 @@ import 'package:http/http.dart' as http show get, post, put, Response;
 
 /// Communicates with the backend server via API calls
 final class ServerCommunication {
-  static Future<bool> login(String username, String password) async {
-    await http.post(
+  static Map<String, String> getHeaders(
+    final String username,
+    final String password,
+  ) {
+    return {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'authorization':
+          "Basic ${base64.encode(utf8.encode('$username:$password'))}",
+    };
+  }
+
+  static Future<bool> login(
+    final String username,
+    final String password,
+  ) async {
+    final http.Response response = await http.post(
       Uri.parse(APICalls.getLoginAPICall()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({'username': username, 'password': password}),
+      headers: getHeaders(username, password),
+    );
+    switch (response.statusCode) {
+      case 200:
+        // Ok
+        return true;
+      case 401:
+        // unauthorized
+        return false;
+      case 404:
+        // Not found
+        return false;
+        // TODO: throw error
+        break;
+      case 500:
+        // Server error
+        // TODO: throw error
+        return false;
+        break;
+      default:
+        return false;
+    }
+  }
+
+  static void startWork(final String username, final String password) async {
+    final http.Response response = await http.post(
+      Uri.parse(APICalls.getStartTimeAPICall()),
+      headers: getHeaders(username, password),
+      body: jsonEncode({'start': DateTime.now().toIso8601String()}),
     );
     // TODO: handle response
-    return true;
   }
 
-  static void startWork() {
-    http.post(
-      Uri.parse(APICalls.getStartTimeAPICall()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({'start': DateTime.now().toIso8601String()}),
-    );
-  }
-
-  static void endWork() {
-    http.post(
+  static void endWork(final String username, final String password) async {
+    final http.Response response = await http.post(
       Uri.parse(APICalls.getEndTimeAPICall()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: getHeaders(username, password),
       body: jsonEncode({'start': DateTime.now().toIso8601String()}),
     );
+    // TODO: handle response
   }
 
-  static List<TimeFrame> getTimes() {
+  static List<TimeFrame> getTimes(
+    final String username,
+    final String password,
+  ) {
     List<TimeFrame> frames = [];
     Future<http.Response> response = http.get(
       Uri.parse(APICalls.getGetTimesAPICall()),
@@ -47,7 +77,11 @@ final class ServerCommunication {
     return frames;
   }
 
-  static void sendTimes(final List<TimeFrame> frames) {
+  static void sendTimes(
+    final String username,
+    final String password,
+    final List<TimeFrame> frames,
+  ) {
     List<String> jsonObjects = [];
     Map<String, dynamic> data = {};
     for (TimeFrame frame in frames) {
@@ -56,15 +90,17 @@ final class ServerCommunication {
     data['times'] = jsonObjects;
     http.post(
       Uri.parse(APICalls.getSendTimesAPICall()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: getHeaders(username, password),
       body: jsonEncode(data),
     );
     // TODO: update
   }
 
-  static void updateTimes(final List<TimeFrame> frames) {
+  static void updateTimes(
+    final String username,
+    final String password,
+    final List<TimeFrame> frames,
+  ) {
     List<String> jsonObjects = [];
     Map<String, dynamic> data = {};
     for (TimeFrame frame in frames) {
@@ -73,9 +109,7 @@ final class ServerCommunication {
     data['times'] = jsonObjects;
     http.put(
       Uri.parse(APICalls.getUpdateTimeAPICall()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: getHeaders(username, password),
       body: jsonEncode(data),
     );
   }
@@ -92,9 +126,7 @@ final class ServerCommunication {
     };
     http.put(
       Uri.parse(APICalls.getUpdatePasswordAPICall()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: getHeaders(username, oldPassword),
       body: jsonEncode(data),
     );
   }

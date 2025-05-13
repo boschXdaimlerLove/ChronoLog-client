@@ -1,3 +1,5 @@
+import 'package:bloc_implementation/bloc_implementation.dart';
+import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart'
@@ -13,8 +15,12 @@ final class Homescreen extends StatefulWidget {
 }
 
 final class _HomescreenState extends State<Homescreen> {
+  HomeBloc? _bloc;
+
   @override
   Widget build(BuildContext context) {
+    _bloc ??= BlocParent.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Row(

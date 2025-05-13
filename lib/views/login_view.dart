@@ -1,3 +1,5 @@
+import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
+import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/views/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart' show Translate;
@@ -14,8 +16,12 @@ final class _LoginViewState extends State<LoginView> {
 
   String password = "";
 
+  HomeBloc? _bloc;
+
   @override
   Widget build(BuildContext context) {
+    _bloc ??= BlocParent.of(context);
+
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Center(
@@ -113,10 +119,13 @@ final class _LoginViewState extends State<LoginView> {
     // TODO: update
     //if (correct) {
     if (true) {
+      _bloc!.login(username, password);
       if (mounted) {
-        Navigator.of(
-          context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => Homescreen()));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => BlocParent(bloc: _bloc!, child: Homescreen()),
+          ),
+        );
       } else {
         // TODO: handle unmounted error
       }

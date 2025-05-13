@@ -1,3 +1,5 @@
+import 'package:bloc_implementation/bloc_implementation.dart';
+import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/translations.dart';
 import 'package:chrono_log/views/login_view.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +55,7 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
       title: "BBQ Worktime Management",
 
       // Screens
-      home: LoginView(),
+      home: BlocParent(bloc: HomeBloc(), child: LoginView()),
     );
   }
 }
