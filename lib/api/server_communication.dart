@@ -1,6 +1,8 @@
-import 'dart:convert' show base64, jsonEncode, utf8;
+import 'dart:convert' show base64, jsonDecode, jsonEncode, utf8;
 
 import 'package:chrono_log/api/api_calls.dart';
+import 'package:chrono_log/api/internal_server_error.dart';
+import 'package:chrono_log/errors/server_not_found_error.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:http/http.dart' as http show get, post, put, Response;
 
@@ -22,40 +24,28 @@ final class ServerCommunication {
       case 200:
         // Ok
         return true;
+      case 400:
+        // Bad request => already checked in or out
+        // TODO: throw error for bad request
+        return false;
       case 401:
         // unauthorized
         return false;
       case 404:
         // Not found
-        return false;
-        // TODO: throw error
-        break;
+        throw ServerNotFoundError();
       case 500:
         // Server error
-        // TODO: throw error
-        return false;
-        break;
+        throw InternalServerError();
       default:
         return false;
     }
-  }
-
-  static Future<bool> login(
-    final String username,
-    final String password,
-  ) async {
-    final http.Response response = await http.post(
-      Uri.parse(APICalls.getLoginAPICall()),
-      headers: getHeaders(username, password),
-    );
-    return handleResponse(response);
   }
 
   static void startWork(final String username, final String password) async {
     final http.Response response = await http.post(
       Uri.parse(APICalls.getStartTimeAPICall()),
       headers: getHeaders(username, password),
-      body: jsonEncode({'start': DateTime.now().toIso8601String()}),
     );
     handleResponse(response);
   }
@@ -64,20 +54,24 @@ final class ServerCommunication {
     final http.Response response = await http.post(
       Uri.parse(APICalls.getEndTimeAPICall()),
       headers: getHeaders(username, password),
-      body: jsonEncode({'start': DateTime.now().toIso8601String()}),
     );
     handleResponse(response);
   }
 
-  static List<TimeFrame> getTimes(
+  static Future<List<TimeFrame>> getTimes(
     final String username,
     final String password,
-  ) {
+  ) async {
     List<TimeFrame> frames = [];
-    Future<http.Response> response = http.get(
+    http.Response response = await http.get(
       Uri.parse(APICalls.getGetTimesAPICall()),
     );
-    // TODO: handle http response
+    if (handleResponse(response)) {
+      List<Map<String, dynamic>> jsonMap = jsonDecode(response.body);
+      for (Map<String, dynamic> jsonFrame in jsonMap) {
+        frames.add(TimeFrame.fromJSON(jsonFrame));
+      }
+    }
     return frames;
   }
 
@@ -86,12 +80,10 @@ final class ServerCommunication {
     final String password,
     final List<TimeFrame> frames,
   ) {
-    List<String> jsonObjects = [];
-    Map<String, dynamic> data = {};
+    List<Map<String, dynamic>> data = [];
     for (TimeFrame frame in frames) {
-      jsonObjects.add(frame.toJSON());
+      data.add(frame.toJSON());
     }
-    data['times'] = jsonObjects;
     http.post(
       Uri.parse(APICalls.getSendTimesAPICall()),
       headers: getHeaders(username, password),
@@ -105,16 +97,14 @@ final class ServerCommunication {
     final String password,
     final List<TimeFrame> frames,
   ) {
-    List<String> jsonObjects = [];
-    Map<String, dynamic> data = {};
+    List<Map<String, dynamic>> jsonObjects = [];
     for (TimeFrame frame in frames) {
       jsonObjects.add(frame.toJSON());
     }
-    data['times'] = jsonObjects;
     http.put(
       Uri.parse(APICalls.getUpdateTimeAPICall()),
       headers: getHeaders(username, password),
-      body: jsonEncode(data),
+      body: jsonEncode(jsonObjects),
     );
   }
 
@@ -133,5 +123,9 @@ final class ServerCommunication {
       headers: getHeaders(username, oldPassword),
       body: jsonEncode(data),
     );
+  }
+
+  static void getStatus() {
+    // TODO: implement method
   }
 }

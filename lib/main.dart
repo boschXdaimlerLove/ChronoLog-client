@@ -1,13 +1,16 @@
 import 'package:bloc_implementation/bloc_implementation.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
+import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/translations.dart';
 import 'package:chrono_log/views/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_ce_flutter/adapters.dart';
 import 'package:modern_themes/modern_themes.dart' show Themes;
 import 'package:string_translate/string_translate.dart'
     hide StandardTranslations;
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
   runApp(const ChronoLogApp());
 }
 
@@ -26,6 +29,7 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
       defaultLocale: TranslationLocales.english,
       translations: translations,
     );
+    Storage.init();
     super.initState();
   }
 
@@ -52,7 +56,7 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
 
       // General
       scrollBehavior: const MaterialScrollBehavior(),
-      title: "BBQ Worktime Management",
+      title: 'BBQ Worktime Management',
 
       // Screens
       home: BlocParent(bloc: HomeBloc(), child: LoginView()),

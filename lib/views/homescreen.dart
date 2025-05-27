@@ -1,11 +1,14 @@
-import 'package:bloc_implementation/bloc_implementation.dart';
+import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
+import 'package:chrono_log/blocs/calendar_list_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
+import 'package:chrono_log/models/events/event.dart';
+import 'package:chrono_log/models/events/logout_event.dart';
+import 'package:chrono_log/views/calendar/calendar_list_view.dart';
+import 'package:chrono_log/views/login_view.dart';
 import 'package:chrono_log/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart'
     show Translate, Translation, TranslationLocales;
-
-import 'calendar/calendar_list_view.dart';
 
 final class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -16,6 +19,26 @@ final class Homescreen extends StatefulWidget {
 
 final class _HomescreenState extends State<Homescreen> {
   HomeBloc? _bloc;
+
+  @override
+  void initState() {
+    if (!HomeBloc.eventStream.hasListener) {
+      HomeBloc.eventStream.stream.listen((event) {
+        _handleEvents(event);
+      });
+    }
+    super.initState();
+  }
+
+  void _handleEvents(Event event) {
+    if (event is LogoutEvent) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => BlocParent(bloc: _bloc!, child: LoginView()),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,35 +55,51 @@ final class _HomescreenState extends State<Homescreen> {
               padding: const EdgeInsets.only(right: 12.0),
               child: Icon(Icons.outdoor_grill, color: Colors.black),
             ),
-            Text("BBQ Working Time Management".tr()),
+            Text('BBQ Working Time Management'.tr()),
           ],
         ),
-        leading: TextButton(
+        leading: IconButton(
           onPressed: () {
-            // TODO: implement logout method
+            HomeBloc.eventStream.sink.add(const LogoutEvent());
           },
-          child: Row(children: [Icon(Icons.arrow_back), Text("Logout".tr())]),
+          icon: Icon(Icons.logout),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: TextButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(
+                  Colors.blueGrey.shade300,
+                ),
+                side: WidgetStatePropertyAll(
+                  BorderSide(color: Colors.blueGrey.shade600),
+                ),
+              ),
               onPressed:
                   () => setState(
                     () =>
                         Translation.changeLanguage(TranslationLocales.english),
                   ),
-              child: Text("🇬🇧"),
+              child: Text('🇬🇧'),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: TextButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(
+                  Colors.blueGrey.shade300,
+                ),
+                side: WidgetStatePropertyAll(
+                  BorderSide(color: Colors.blueGrey.shade600),
+                ),
+              ),
               onPressed:
                   () => setState(
                     () => Translation.changeLanguage(TranslationLocales.german),
                   ),
-              child: Text("🇩🇪"),
+              child: Text('🇩🇪'),
             ),
           ),
           Padding(
@@ -76,6 +115,7 @@ final class _HomescreenState extends State<Homescreen> {
         ],
         backgroundColor: Colors.grey.shade100,
         foregroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
@@ -88,7 +128,7 @@ final class _HomescreenState extends State<Homescreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
-                children: [Text("No unread messages".tr())],
+                children: [Text('No unread messages'.tr())],
               ),
             ),
             Padding(
@@ -99,18 +139,26 @@ final class _HomescreenState extends State<Homescreen> {
               flex: 8,
               child: Column(
                 children: [
-                  Flexible(child: CalendarListView()),
+                  Flexible(
+                    child: BlocParent(
+                      bloc: CalendarListBloc(),
+                      child: CalendarListView(),
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      // TODO: update text to end work
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: TextButton(
-                          onPressed: () {},
-                          child: Text("Start Work"),
+                          onPressed: () => setState(() => _bloc!.stamp()),
+                          child: Text(
+                            _bloc!.stampedIn
+                                ? 'End Work'.tr()
+                                : 'Start Work'.tr(),
+                          ),
                         ),
                       ),
                     ],

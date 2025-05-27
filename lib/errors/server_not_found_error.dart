@@ -1,0 +1,1 @@
+final class ServerNotFoundError extends Error {}

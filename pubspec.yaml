@@ -35,13 +35,19 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   http: ^1.4.0
-  string_translate: ^1.4.5
-  modern_themes: ^1.5.4
+  hive_ce: ^2.11.2
+  hive_ce_flutter: ^2.3.1
+  intl: ^0.20.2
+
+  string_translate: ^2.0.1
+  modern_themes: ^2.0.0
   bloc_implementation: ^1.1.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^2.4.14
+  hive_ce_generator: ^1.8.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

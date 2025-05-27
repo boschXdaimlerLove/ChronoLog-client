@@ -1,5 +1,8 @@
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
+import 'package:chrono_log/api/server_communication.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
+import 'package:chrono_log/models/time_frame.dart';
+import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/views/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart' show Translate;
@@ -12,9 +15,9 @@ final class LoginView extends StatefulWidget {
 }
 
 final class _LoginViewState extends State<LoginView> {
-  String username = "";
+  String username = '';
 
-  String password = "";
+  String password = '';
 
   HomeBloc? _bloc;
 
@@ -34,7 +37,7 @@ final class _LoginViewState extends State<LoginView> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Login",
+                'Login',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -43,7 +46,7 @@ final class _LoginViewState extends State<LoginView> {
               ),
             ),
             Text(
-              "Log into your BBQ work account".tr(),
+              'Log into your BBQ work account'.tr(),
               style: TextStyle(
                 fontStyle: FontStyle.normal,
                 fontWeight: FontWeight.w300,
@@ -65,7 +68,7 @@ final class _LoginViewState extends State<LoginView> {
                   enableIMEPersonalizedLearning: false,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
-                    labelText: "Username".tr(),
+                    labelText: 'Username'.tr(),
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     floatingLabelAlignment: FloatingLabelAlignment.start,
                   ),
@@ -89,7 +92,7 @@ final class _LoginViewState extends State<LoginView> {
                   enableInteractiveSelection: true,
                   enableSuggestions: false,
                   decoration: InputDecoration(
-                    labelText: "Password".tr(),
+                    labelText: 'Password'.tr(),
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     floatingLabelAlignment: FloatingLabelAlignment.start,
                   ),
@@ -98,13 +101,13 @@ final class _LoginViewState extends State<LoginView> {
             ),
             Spacer(flex: 2),
             TextButton(
-              onPressed: () => login(),
+              onPressed: () => _login(),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24.0,
                   vertical: 12,
                 ),
-                child: Text("Log in".tr()),
+                child: Text('Log in'.tr()),
               ),
             ),
             Spacer(flex: 1),
@@ -114,11 +117,23 @@ final class _LoginViewState extends State<LoginView> {
     );
   }
 
-  void login() async {
-    //bool correct = await ServerCommunication.login(username, password);
-    // TODO: update
-    //if (correct) {
-    if (true) {
+  void _login() async {
+    bool correct = false;
+    String error = "";
+    try {
+      List<TimeFrame> frames = await ServerCommunication.getTimes(
+        username,
+        password,
+      );
+      for (TimeFrame frame in frames) {
+        Storage.storeNewTime(frame);
+      }
+      correct = true;
+    } catch (e) {
+      error = e.toString();
+      correct = true;
+    }
+    if (correct) {
       _bloc!.login(username, password);
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -126,11 +141,35 @@ final class _LoginViewState extends State<LoginView> {
             builder: (_) => BlocParent(bloc: _bloc!, child: Homescreen()),
           ),
         );
-      } else {
-        // TODO: handle unmounted error
       }
     } else {
-      // TODO: show dialog
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: Text(
+                'Login error'.tr(),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              content: Text('''
+                  There's been an error logging you in. You either entered the wrong login data, or there is no internet connection.
+                  $error
+                    ''', style: TextStyle(fontWeight: FontWeight.w300)),
+              actions: [
+                TextButton(
+                  onPressed: () => _login(),
+                  child: Text('Try again'.tr()),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Close'.tr()),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 }
