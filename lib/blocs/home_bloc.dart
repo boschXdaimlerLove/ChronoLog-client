@@ -9,13 +9,17 @@ final class HomeBloc extends Bloc {
 
   String _password = '';
 
+  String get username => _username;
+
+  String get password => _password;
+
   bool _stampedIn = false;
 
   bool get stampedIn => _stampedIn;
 
-  static final StreamController<Event> _eventStream = StreamController<Event>();
+  final StreamController<Event> _eventStream = StreamController<Event>();
 
-  static StreamController<Event> get eventStream => _eventStream;
+  StreamController<Event> get eventStream => _eventStream;
 
   void login(final String username, final String password) {
     _username = username;
@@ -32,14 +36,11 @@ final class HomeBloc extends Bloc {
     }
   }
 
-  String get username => _username;
-
-  String get password => _password;
-
   @override
   void dispose() {
     _username = '';
     _password = '';
+    _stampedIn = false;
     _eventStream.close();
   }
 }

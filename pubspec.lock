@@ -625,10 +625,10 @@ packages:
     dependency: "direct main"
     description:
       name: string_translate
-      sha256: a0be065da282e118242247d4128426f73742ab5859d3ffb7aae67d3ce6ce552f
+      sha256: "5eee2e11441270801b37c6d7227ae6d863642655dbd732e34099dca4f9c88f77"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   term_glyph:
     dependency: transitive
     description:

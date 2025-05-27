@@ -20,21 +20,14 @@ final class Homescreen extends StatefulWidget {
 final class _HomescreenState extends State<Homescreen> {
   HomeBloc? _bloc;
 
-  @override
-  void initState() {
-    if (!HomeBloc.eventStream.hasListener) {
-      HomeBloc.eventStream.stream.listen((event) {
-        _handleEvents(event);
-      });
-    }
-    super.initState();
-  }
-
   void _handleEvents(Event event) {
     if (event is LogoutEvent) {
+      if (_bloc!.stampedIn) {
+        _bloc!.stamp();
+      }
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => BlocParent(bloc: _bloc!, child: LoginView()),
+          builder: (_) => BlocParent(bloc: HomeBloc(), child: LoginView()),
         ),
       );
     }
@@ -43,6 +36,11 @@ final class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     _bloc ??= BlocParent.of(context);
+    if (!_bloc!.eventStream.hasListener) {
+      _bloc!.eventStream.stream.listen((event) {
+        _handleEvents(event);
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -60,7 +58,7 @@ final class _HomescreenState extends State<Homescreen> {
         ),
         leading: IconButton(
           onPressed: () {
-            HomeBloc.eventStream.sink.add(const LogoutEvent());
+            _bloc!.eventStream.sink.add(const LogoutEvent());
           },
           icon: Icon(Icons.logout),
         ),
