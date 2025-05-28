@@ -1,25 +1,37 @@
 import 'dart:collection' show UnmodifiableListView;
 
+import 'package:chrono_log/models/notification.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:hive_ce_flutter/adapters.dart';
 
 final class Storage {
   static Box<TimeFrame>? _frameBox;
 
+  static Box<Notification>? _notificationBox;
+
   /// The Key for the [_frameBox]
   static const String _frameBoxKey = 'TimeFrame Box';
 
+  static const String _notificationBoxKey = 'Notification Box';
+
   static final List<TimeFrame> _frameList = [];
+
+  static final List<Notification> _notificationList = [];
 
   static UnmodifiableListView<TimeFrame> get frames =>
       UnmodifiableListView(_frameList);
 
+  static UnmodifiableListView<Notification> get notifications =>
+      UnmodifiableListView(_notificationList);
+
   static Future<void> init() async {
     Hive.registerAdapter(TimeFrameAdapter());
+    Hive.registerAdapter(NotificationAdapter());
     _frameBox = await Hive.openBox<TimeFrame>(_frameBoxKey);
+    _notificationBox = await Hive.openBox<Notification>(_notificationBoxKey);
+    await _frameBox!.clear();
     _loadTimes();
-    //_frameList.add(TimeFrame(DateTime.now(), DateTime.now()));
-    //_frameList.add(TimeFrame(DateTime.now(), DateTime.now()));
+    _loadNotifications();
   }
 
   static void _loadTimes() {
@@ -28,12 +40,30 @@ final class Storage {
     }
   }
 
-  static void storeNewTime(TimeFrame time) {
+  static void _loadNotifications() {
+    _notificationList.add(
+      Notification(
+        'Test notification',
+        'This is a long test notification to test notifications LOL',
+      ),
+    );
+    _notificationList.add(
+      Notification(
+        'Test notification',
+        'This is a long test notification to test notifications LOL',
+      ),
+    );
+    for (Notification not in _notificationBox!.values) {
+      _notificationList.add(not);
+    }
+  }
+
+  static Future<void> storeNewTime(TimeFrame time) async {
     _frameList.add(time);
-    _frameBox!.deleteAll(_frameBox!.keys);
+    await _frameBox!.clear();
     for (int i = 0; i < _frameList.length; i++) {
       final String key = 'TimeFrame $i';
-      _frameBox!.put(key, _frameList[i]);
+      await _frameBox!.put(key, _frameList[i]);
     }
   }
 

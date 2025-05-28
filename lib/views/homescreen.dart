@@ -1,12 +1,17 @@
+import 'dart:collection' show UnmodifiableListView;
+
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/calendar_list_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
+import 'package:chrono_log/blocs/settings_bloc.dart';
 import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
+import 'package:chrono_log/models/notification.dart';
+import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/views/calendar/calendar_list_view.dart';
 import 'package:chrono_log/views/login_view.dart';
 import 'package:chrono_log/views/settings_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Notification;
 import 'package:string_translate/string_translate.dart'
     show Translate, Translation, TranslationLocales;
 
@@ -19,6 +24,8 @@ final class Homescreen extends StatefulWidget {
 
 final class _HomescreenState extends State<Homescreen> {
   HomeBloc? _bloc;
+
+  UnmodifiableListView<Notification> _notifications = UnmodifiableListView([]);
 
   void _handleEvents(Event event) {
     if (event is LogoutEvent) {
@@ -41,6 +48,7 @@ final class _HomescreenState extends State<Homescreen> {
         _handleEvents(event);
       });
     }
+    _notifications = Storage.notifications;
 
     return Scaffold(
       appBar: AppBar(
@@ -104,9 +112,15 @@ final class _HomescreenState extends State<Homescreen> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: IconButton(
               onPressed:
-                  () => Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (_) => SettingsScreen())),
+                  () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:
+                          (_) => BlocParent(
+                            bloc: SettingsBloc(_bloc!.username),
+                            child: SettingsScreen(),
+                          ),
+                    ),
+                  ),
               icon: Icon(Icons.settings, color: Colors.black),
             ),
           ),
@@ -119,18 +133,9 @@ final class _HomescreenState extends State<Homescreen> {
         padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
         child: Row(
           children: [
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [Text('No unread messages'.tr())],
-              ),
-            ),
+            Flexible(fit: FlexFit.tight, flex: 1, child: _notificationColumn),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: VerticalDivider(thickness: 1.5),
             ),
             Flexible(
@@ -168,5 +173,43 @@ final class _HomescreenState extends State<Homescreen> {
         ),
       ),
     );
+  }
+
+  Widget get _notificationColumn {
+    if (_notifications.isEmpty) {
+      return Text('No unread messages'.tr());
+    } else {
+      return ListView.builder(
+        itemCount: _notifications.length,
+        itemBuilder: (_, counter) {
+          final Notification notification = _notifications[counter];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: BoxBorder.all(),
+                color: Colors.pink.shade300,
+              ),
+              child: ListTile(
+                title: Text(notification.title),
+                titleTextStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(notification.message),
+                ),
+                subtitleTextStyle: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                ),
+                isThreeLine: true,
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 }

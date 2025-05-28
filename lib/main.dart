@@ -11,6 +11,7 @@ import 'package:string_translate/string_translate.dart'
 
 void main() async {
   await Hive.initFlutter();
+  await Storage.init();
   runApp(const ChronoLogApp());
 }
 
@@ -29,7 +30,6 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
       defaultLocale: TranslationLocales.english,
       translations: translations,
     );
-    Storage.init();
     super.initState();
   }
 

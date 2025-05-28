@@ -36,7 +36,7 @@ final class TimeFrame {
   }
 
   String getWorkingTimeRepresentation() {
-    String res = "";
+    String res = '';
     final Duration duration = getWorkingTime();
     res += duration.inHours.toString().padLeft(2, '0');
     res += 'h ';
@@ -50,5 +50,15 @@ final class TimeFrame {
       'start': start.toUtc().toIso8601String(),
       'end': end.toUtc().toIso8601String(),
     };
+  }
+
+  @override
+  String toString() {
+    return '''
+    TimeFrame:
+    start: $start,
+    end: $end,
+    duration: ${getWorkingTimeRepresentation()}
+    ''';
   }
 }

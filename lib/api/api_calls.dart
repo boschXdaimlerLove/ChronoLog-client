@@ -1,25 +1,26 @@
 /// Contains all the API calls done in this app
 final class APICalls {
-  static const String host = 'http://localhost:8080/chronolog/api';
+  static const String host =
+      'http://127.0.0.1:8080/worktime-server-1.0-SNAPSHOT/api';
 
   static String getUpdateTimeAPICall() {
-    return '$host/times/update-times'; // Change times to a later date // Response 200 -> optional
+    return '$host/time/update-times'; // Change times to a later date // Response 200 -> optional
   }
 
   static String getSendTimesAPICall() {
-    return '$host/times/new-times'; // Send new times
+    return '$host/time/new-times'; // Send new times
   }
 
   static String getGetTimesAPICall() {
-    return '$host/times';
+    return '$host/time';
   }
 
   static String getStartTimeAPICall() {
-    return '$host/times/stamp-in';
+    return '$host/time/stamp-in';
   }
 
   static String getEndTimeAPICall() {
-    return '$host/times/stamp-out';
+    return '$host/time/stamp-out';
   }
 
   static String getUpdatePasswordAPICall() {
@@ -27,6 +28,6 @@ final class APICalls {
   }
 
   static String getStatusAPICall() {
-    return '$host/times/status';
+    return '$host/time/status';
   }
 }

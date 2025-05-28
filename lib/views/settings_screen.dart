@@ -1,3 +1,5 @@
+import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
+import 'package:chrono_log/blocs/settings_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart' show Translate;
 
@@ -9,22 +11,22 @@ final class SettingsScreen extends StatefulWidget {
 }
 
 final class _SettingsScreenState extends State<SettingsScreen> {
-  String oldPassword = '';
+  SettingsBloc? _bloc;
 
-  String newPassword = '';
+  bool _oldPasswordObscured = true;
 
-  String newPasswordConfirm = '';
+  bool _newPasswordObscured = true;
 
-  bool oldPasswordObscured = true;
-
-  bool newPasswordObscured = true;
-
-  bool newPasswordConfirmObscured = true;
+  bool _newPasswordConfirmObscured = true;
 
   @override
   Widget build(BuildContext context) {
+    _bloc ??= BlocParent.of(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.grey.shade100,
+        foregroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.black),
         title: Text('Settings'.tr()),
         automaticallyImplyLeading: true,
       ),
@@ -36,26 +38,100 @@ final class _SettingsScreenState extends State<SettingsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 24,
             children: [
+              Spacer(flex: 3),
               TextField(
-                decoration: InputDecoration(labelText: 'Old Password'),
-                obscureText: oldPasswordObscured,
+                enableIMEPersonalizedLearning: false,
+                enableInteractiveSelection: true,
+                enableSuggestions: false,
+                decoration: InputDecoration(
+                  labelText: 'current password'.tr(),
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelAlignment: FloatingLabelAlignment.start,
+                  suffixIcon: IconButton(
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStatePropertyAll(Colors.black),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _oldPasswordObscured = !_oldPasswordObscured;
+                      });
+                    },
+                    icon: Icon(
+                      _oldPasswordObscured
+                          ? Icons.panorama_fish_eye
+                          : Icons.hide_source,
+                    ),
+                  ),
+                ),
+                obscureText: _oldPasswordObscured,
                 obscuringCharacter: '*',
-                onSubmitted: (oldPassword) => this.oldPassword = oldPassword,
+                onSubmitted: (oldPassword) => _bloc!.oldPassword = oldPassword,
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'New Password'),
-                obscureText: newPasswordObscured,
+                enableIMEPersonalizedLearning: false,
+                enableInteractiveSelection: true,
+                enableSuggestions: false,
+                decoration: InputDecoration(
+                  labelText: 'new password'.tr(),
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelAlignment: FloatingLabelAlignment.start,
+                  suffixIcon: IconButton(
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStatePropertyAll(Colors.black),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _newPasswordObscured = !_newPasswordObscured;
+                      });
+                    },
+                    icon: Icon(
+                      _newPasswordObscured
+                          ? Icons.panorama_fish_eye
+                          : Icons.hide_source,
+                    ),
+                  ),
+                ),
+                obscureText: _newPasswordObscured,
                 obscuringCharacter: '*',
-                onSubmitted: (newPassword) => this.newPassword = newPassword,
+                onSubmitted: (newPassword) => _bloc!.newPassword = newPassword,
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Confirm new Password'),
-                obscureText: newPasswordConfirmObscured,
+                enableIMEPersonalizedLearning: false,
+                enableInteractiveSelection: true,
+                enableSuggestions: false,
+                decoration: InputDecoration(
+                  labelText: 'Confirm new password'.tr(),
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelAlignment: FloatingLabelAlignment.start,
+                  suffixIcon: IconButton(
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStatePropertyAll(Colors.black),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _newPasswordConfirmObscured =
+                            !_newPasswordConfirmObscured;
+                      });
+                    },
+                    icon: Icon(
+                      _newPasswordConfirmObscured
+                          ? Icons.panorama_fish_eye
+                          : Icons.hide_source,
+                    ),
+                  ),
+                ),
+                obscureText: _newPasswordConfirmObscured,
                 obscuringCharacter: '*',
                 onSubmitted:
                     (newPasswordConfirm) =>
-                        this.newPasswordConfirm = newPasswordConfirm,
+                        _bloc!.newPasswordConfirm = newPasswordConfirm,
               ),
+              Spacer(flex: 2),
+              TextButton(
+                onPressed: () => _bloc!.submit(),
+                child: Text('Submit'.tr()),
+              ),
+              Spacer(),
             ],
           ),
         ),

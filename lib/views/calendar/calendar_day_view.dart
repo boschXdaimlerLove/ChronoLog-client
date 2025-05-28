@@ -16,12 +16,12 @@ final class CalendarDayView extends StatefulWidget {
 final class _CalendarDayViewState extends State<CalendarDayView> {
   CalendarDayBloc? _bloc;
 
-  List<TimeFrame> _frames = [];
+  List<TimeFrame>? _frames;
 
   @override
   Widget build(BuildContext context) {
     _bloc ??= BlocParent.of(context);
-    _frames = Storage.getFramesForDay(_bloc!.day);
+    _frames ??= Storage.getFramesForDay(_bloc!.day);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey.shade100,
@@ -37,85 +37,83 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
         ),
       ),
       body: ListView.builder(
-        itemCount: _frames.length,
+        itemCount: _frames!.length,
         itemBuilder: (_, counter) {
-          final TimeFrame frame = _frames[counter];
-          return Flexible(
-            child: Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                spacing: 8,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    spacing: 200,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 12,
-                        children: [
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade400,
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(
-                                'Start: ${DateFormat('hh:mm').format(frame.start)}',
-                              ),
+          final TimeFrame frame = _frames![counter];
+          return Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 8,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  spacing: 200,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 12,
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              'Start: ${DateFormat('hh:mm').format(frame.start)}',
                             ),
                           ),
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade400,
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(
-                                'End:   ${DateFormat('hh:mm').format(frame.end)}',
-                              ),
+                        ),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              'End:   ${DateFormat('hh:mm').format(frame.end)}',
                             ),
                           ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 12,
-                        children: [
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade400,
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(
-                                'Working time: ${frame.getWorkingTimeRepresentation()}',
-                              ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 12,
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              'Working time: ${frame.getWorkingTimeRepresentation()}',
                             ),
                           ),
-                          _getWorkingTimeHint(frame),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                ],
-              ),
+                        ),
+                        _getWorkingTimeHint(frame),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(),
+              ],
             ),
           );
         },
