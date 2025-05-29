@@ -102,11 +102,11 @@ final class _TopBarState extends State<TopBar> {
             ),
             Positioned(
               width: 300,
-              left: position.dx + 200,
+              left: position.dx,
               child: CompositedTransformFollower(
                 link: _link,
                 showWhenUnlinked: false,
-                offset: Offset(0, 30),
+                offset: Offset(widget.loggedIn ? 80 : 0, 30),
                 child: Material(
                   elevation: 4,
                   child: DecoratedBox(
@@ -120,6 +120,10 @@ final class _TopBarState extends State<TopBar> {
                             style: _textStyle,
                           ),
                           onTap: _toggleLanguageSettingsSubMenu,
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.black26,
+                          ),
                         ),
                         _changePasswordTile,
                       ],
@@ -171,7 +175,7 @@ final class _TopBarState extends State<TopBar> {
               child: CompositedTransformFollower(
                 link: _link,
                 showWhenUnlinked: false,
-                offset: Offset.zero,
+                offset: Offset(widget.loggedIn ? 380 : 300, 30),
                 child: Material(
                   elevation: 4,
                   child: DecoratedBox(
@@ -181,6 +185,7 @@ final class _TopBarState extends State<TopBar> {
                       children: [
                         ListTile(
                           title: Text('English'.tr(), style: _textStyle),
+                          leading: Text('🇬🇧'),
                           onTap: () {
                             setState(() {
                               _removeLanguageSubSettingsMenu();
@@ -194,6 +199,7 @@ final class _TopBarState extends State<TopBar> {
                         Divider(),
                         ListTile(
                           title: Text('German'.tr(), style: _textStyle),
+                          leading: Text('🇩🇪'),
                           onTap: () {
                             setState(() {
                               _removeLanguageSubSettingsMenu();
@@ -222,12 +228,12 @@ final class _TopBarState extends State<TopBar> {
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: Text('Log out?'.tr()),
+          title: Text('log out?'.tr()),
           content: Text(
-            '''
-                      Do you really want to log out?
-                      You'll have to log in again to use the services
-                      '''.tr(),
+            'Do you really want to log out?\nYou\'ll have to log in again '
+                    'to use the services'
+                .tr(),
+            textAlign: TextAlign.start,
           ),
           actions: <TextButton>[
             TextButton(

@@ -40,7 +40,7 @@ final class _LoginViewState extends State<LoginView> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Login',
+                'Login'.tr(),
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,

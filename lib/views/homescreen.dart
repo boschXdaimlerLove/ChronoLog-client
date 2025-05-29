@@ -146,8 +146,8 @@ final class _HomescreenState extends State<Homescreen> {
                                 onPressed: () => setState(() => _bloc!.stamp()),
                                 child: Text(
                                   _bloc!.stampedIn
-                                      ? 'End Work'.tr()
-                                      : 'Start Work'.tr(),
+                                      ? 'end work'.tr()
+                                      : 'start work'.tr(),
                                 ),
                               ),
                             ),

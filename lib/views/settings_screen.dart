@@ -150,7 +150,7 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
               ),
               TextButton(
                 onPressed: () => _bloc!.submit(),
-                child: Text('Submit'.tr()),
+                child: Text('submit'.tr()),
               ),
             ],
           ),
