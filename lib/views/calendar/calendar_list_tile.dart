@@ -1,5 +1,6 @@
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/calendar_day_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show
         BuildContext,
@@ -21,7 +22,9 @@ import 'package:flutter/material.dart'
 import 'calendar_day_view.dart';
 
 final class CalendarListTile extends StatelessWidget {
-  const CalendarListTile(this.date, {super.key});
+  const CalendarListTile(this.date, {super.key, this.previousMonth = false});
+
+  final bool previousMonth;
 
   final DateTime date;
 
@@ -31,7 +34,15 @@ final class CalendarListTile extends StatelessWidget {
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(_backgroundColor),
         side: WidgetStatePropertyAll(
-          BorderSide(style: BorderStyle.solid, color: Colors.orange.shade200),
+          BorderSide(
+            style: BorderStyle.solid,
+            color: previousMonth ? Colors.teal.shade100 : Colors.teal.shade400,
+          ),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.all(Radius.zero),
+          ),
         ),
       ),
       onPressed: () {
@@ -51,12 +62,15 @@ final class CalendarListTile extends StatelessWidget {
 
   Color get _backgroundColor {
     DateTime today = DateTime.now();
+    if (previousMonth) {
+      return Colors.teal.shade50;
+    }
     if (date.day == today.day &&
         date.month == today.month &&
         date.year == today.year) {
-      return Colors.red.shade500;
+      return Colors.teal.shade300;
     } else {
-      return Colors.orange.shade400;
+      return Colors.teal.shade100;
     }
   }
 }

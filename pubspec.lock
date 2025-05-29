@@ -305,7 +305,7 @@ packages:
     source: hosted
     version: "2.3.2"
   helpful_extensions:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: helpful_extensions
       sha256: ffafe0a54b207490b7d9f779ab730709c798f2ffe67cebcaebaf0a59c29684cb

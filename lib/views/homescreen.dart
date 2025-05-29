@@ -1,19 +1,15 @@
-import 'dart:collection' show UnmodifiableListView;
-
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/calendar_list_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
-import 'package:chrono_log/blocs/settings_bloc.dart';
 import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
 import 'package:chrono_log/models/notification.dart';
 import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/views/calendar/calendar_list_view.dart';
 import 'package:chrono_log/views/login_view.dart';
-import 'package:chrono_log/views/settings_screen.dart';
+import 'package:chrono_log/views/top_bar.dart';
 import 'package:flutter/material.dart' hide Notification;
-import 'package:string_translate/string_translate.dart'
-    show Translate, Translation, TranslationLocales;
+import 'package:string_translate/string_translate.dart' show Translate;
 
 final class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -25,7 +21,7 @@ final class Homescreen extends StatefulWidget {
 final class _HomescreenState extends State<Homescreen> {
   HomeBloc? _bloc;
 
-  UnmodifiableListView<Notification> _notifications = UnmodifiableListView([]);
+  List<Notification> _notifications = [];
 
   void _handleEvents(Event event) {
     if (event is LogoutEvent) {
@@ -43,136 +39,15 @@ final class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     _bloc ??= BlocParent.of(context);
-    if (!_bloc!.eventStream.hasListener) {
-      _bloc!.eventStream.stream.listen((event) {
+    if (!HomeBloc.eventStream.hasListener) {
+      HomeBloc.eventStream.stream.listen((event) {
         _handleEvents(event);
       });
     }
-    _notifications = Storage.notifications;
+    _notifications = List.from(Storage.notifications);
+    _notifications.sort((a, b) => a.alreadyRead ? 1 : -1);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: Icon(Icons.outdoor_grill, color: Colors.black),
-            ),
-            Text('BBQ Working Time Management'.tr()),
-          ],
-        ),
-        leading: IconButton(
-          onPressed: () {
-            _bloc!.eventStream.sink.add(const LogoutEvent());
-          },
-          icon: Icon(Icons.logout),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(
-                  Colors.blueGrey.shade300,
-                ),
-                side: WidgetStatePropertyAll(
-                  BorderSide(color: Colors.blueGrey.shade600),
-                ),
-              ),
-              onPressed:
-                  () => setState(
-                    () =>
-                        Translation.changeLanguage(TranslationLocales.english),
-                  ),
-              child: Text('🇬🇧'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(
-                  Colors.blueGrey.shade300,
-                ),
-                side: WidgetStatePropertyAll(
-                  BorderSide(color: Colors.blueGrey.shade600),
-                ),
-              ),
-              onPressed:
-                  () => setState(
-                    () => Translation.changeLanguage(TranslationLocales.german),
-                  ),
-              child: Text('🇩🇪'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: IconButton(
-              onPressed:
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (_) => BlocParent(
-                            bloc: SettingsBloc(_bloc!.username),
-                            child: SettingsScreen(),
-                          ),
-                    ),
-                  ),
-              icon: Icon(Icons.settings, color: Colors.black),
-            ),
-          ),
-        ],
-        backgroundColor: Colors.grey.shade100,
-        foregroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
-        child: Row(
-          children: [
-            Flexible(fit: FlexFit.tight, flex: 1, child: _notificationColumn),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: VerticalDivider(thickness: 1.5),
-            ),
-            Flexible(
-              flex: 8,
-              child: Column(
-                children: [
-                  Flexible(
-                    child: BlocParent(
-                      bloc: CalendarListBloc(),
-                      child: CalendarListView(),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: TextButton(
-                          onPressed: () => setState(() => _bloc!.stamp()),
-                          child: Text(
-                            _bloc!.stampedIn
-                                ? 'End Work'.tr()
-                                : 'Start Work'.tr(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Scaffold(body: _body);
   }
 
   Widget get _notificationColumn {
@@ -187,14 +62,27 @@ final class _HomescreenState extends State<Homescreen> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                border: BoxBorder.all(),
-                color: Colors.pink.shade300,
+                border: BoxBorder.all(
+                  color:
+                      notification.alreadyRead
+                          ? Colors.teal.shade100
+                          : Colors.teal.shade400,
+                  style: BorderStyle.solid,
+                ),
+                color:
+                    notification.alreadyRead
+                        ? Colors.teal.shade50
+                        : Colors.teal.shade100,
               ),
               child: ListTile(
                 title: Text(notification.title),
                 titleTextStyle: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color:
+                      notification.alreadyRead
+                          ? Colors.black54
+                          : Colors.black87,
                 ),
                 subtitle: Padding(
                   padding: const EdgeInsets.only(top: 4.0),
@@ -203,6 +91,10 @@ final class _HomescreenState extends State<Homescreen> {
                 subtitleTextStyle: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
+                  color:
+                      notification.alreadyRead
+                          ? Colors.black38
+                          : Colors.black54,
                 ),
                 isThreeLine: true,
               ),
@@ -211,5 +103,65 @@ final class _HomescreenState extends State<Homescreen> {
         },
       );
     }
+  }
+
+  Widget get _body {
+    return Column(
+      children: [
+        TopBar(refreshCallback: () => setState(() {})),
+        Expanded(
+          flex: 10,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+            child: Row(
+              children: [
+                Expanded(flex: 1, child: _notificationColumn),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: VerticalDivider(thickness: 1.5),
+                ),
+                Expanded(
+                  flex: 4,
+                  child: LayoutBuilder(
+                    builder: (_, constraints) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: BlocParent(
+                              bloc: CalendarListBloc(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: CalendarListView(),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: TextButton(
+                                onPressed: () => setState(() => _bloc!.stamp()),
+                                child: Text(
+                                  _bloc!.stampedIn
+                                      ? 'End Work'.tr()
+                                      : 'Start Work'.tr(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

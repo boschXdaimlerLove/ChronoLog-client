@@ -32,7 +32,7 @@ final class TimeFrame {
   }
 
   Duration getWorkingTime() {
-    return start.difference(end);
+    return end.difference(start);
   }
 
   String getWorkingTimeRepresentation() {

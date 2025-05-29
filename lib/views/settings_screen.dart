@@ -1,16 +1,45 @@
-import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/settings_bloc.dart';
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart' show Translate;
 
-final class SettingsScreen extends StatefulWidget {
+final class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        ListTile(
+          title: Text('Change password'.tr()),
+          subtitle: Text('Change your login password'.tr()),
+          leading: Icon(Icons.password),
+          onTap: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => Dialog(child: PasswordSettingsScreen()),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Change language'.tr()),
+          subtitle: Text('Change the display language of the app'.tr()),
+          leading: Icon(CupertinoIcons.globe),
+        ),
+      ],
+    );
+  }
 }
 
-final class _SettingsScreenState extends State<SettingsScreen> {
+final class PasswordSettingsScreen extends StatefulWidget {
+  const PasswordSettingsScreen({super.key});
+
+  @override
+  State<PasswordSettingsScreen> createState() => _PasswordSettingsScreenState();
+}
+
+final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
   SettingsBloc? _bloc;
 
   bool _oldPasswordObscured = true;
@@ -21,24 +50,17 @@ final class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _bloc ??= BlocParent.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey.shade100,
-        foregroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text('Settings'.tr()),
-        automaticallyImplyLeading: true,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 64.0),
+    //_bloc ??= BlocParent.of(context);
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 400, maxWidth: 600),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 24,
             children: [
-              Spacer(flex: 3),
               TextField(
                 enableIMEPersonalizedLearning: false,
                 enableInteractiveSelection: true,
@@ -126,16 +148,23 @@ final class _SettingsScreenState extends State<SettingsScreen> {
                     (newPasswordConfirm) =>
                         _bloc!.newPasswordConfirm = newPasswordConfirm,
               ),
-              Spacer(flex: 2),
               TextButton(
                 onPressed: () => _bloc!.submit(),
                 child: Text('Submit'.tr()),
               ),
-              Spacer(),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class LanguageSettingsScreen extends StatelessWidget {
+  const LanguageSettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

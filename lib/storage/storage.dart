@@ -45,6 +45,7 @@ final class Storage {
       Notification(
         'Test notification',
         'This is a long test notification to test notifications LOL',
+        read: true,
       ),
     );
     _notificationList.add(

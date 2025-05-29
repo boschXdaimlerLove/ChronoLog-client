@@ -16,16 +16,19 @@ final class CalendarListView extends StatefulWidget {
 final class _CalendarListViewState extends State<CalendarListView> {
   CalendarListBloc? _bloc;
 
+  int _firstMondayCounter = 0;
+
   @override
   Widget build(BuildContext context) {
     _bloc ??= BlocParent.of(context);
-
+    _findFirstMonday();
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Flexible(
+        SizedBox(
+          height: 70,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -60,13 +63,30 @@ final class _CalendarListViewState extends State<CalendarListView> {
             ),
           ),
         ),
-        Flexible(
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Spacing to look centered
+            Text(' Monday'.tr()),
+            Text('  Tuesday'.tr()),
+            Text('Wednesday'.tr()),
+            Text('Thursday '.tr()),
+            Text('Friday   '.tr()),
+            Text('Saturday '.tr()),
+            Text('  Sunday '.tr()),
+          ],
+        ),
+        Expanded(
+          flex: 4,
           child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 7,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              mainAxisExtent: 50,
-              maxCrossAxisExtent: 100,
+              childAspectRatio: 2,
+              mainAxisExtent: 70,
             ),
             addAutomaticKeepAlives: true,
             addRepaintBoundaries: true,
@@ -77,23 +97,58 @@ final class _CalendarListViewState extends State<CalendarListView> {
             reverse: false,
             scrollDirection: Axis.vertical,
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            itemCount: DateUtils.getDaysInMonth(
-              _bloc!.currentYear,
-              _bloc!.currentMonth,
-            ),
+            itemCount:
+                DateUtils.getDaysInMonth(
+                  _bloc!.currentYear,
+                  _bloc!.currentMonth,
+                ) +
+                _firstMondayCounter,
             itemBuilder: (_, counter) {
-              int day = counter + 1;
-              return SizedBox(
-                width: 60,
-                height: 40,
-                child: CalendarListTile(
-                  DateTime(_bloc!.currentYear, _bloc!.currentMonth, day),
-                ),
-              );
+              final int day = counter + 1;
+              if (day < _firstMondayCounter) {
+                final int daysInPreviousMonth = DateUtils.getDaysInMonth(
+                  _bloc!.currentYear,
+                  _bloc!.previousMonth,
+                );
+                return SizedBox(
+                  width: 60,
+                  height: 40,
+                  child: CalendarListTile(
+                    DateTime(
+                      _bloc!.currentYear,
+                      _bloc!.currentMonth - 1,
+                      daysInPreviousMonth - (_firstMondayCounter - day - 1),
+                    ),
+                    previousMonth: true,
+                  ),
+                );
+              } else {
+                return SizedBox(
+                  width: 60,
+                  height: 40,
+                  child: CalendarListTile(
+                    DateTime(
+                      _bloc!.currentYear,
+                      _bloc!.currentMonth,
+                      day - _firstMondayCounter + 1,
+                    ),
+                  ),
+                );
+              }
             },
           ),
         ),
       ],
     );
+  }
+
+  void _findFirstMonday() {
+    for (int i = 1; i <= 7; i++) {
+      final date = DateTime(_bloc!.currentYear, _bloc!.currentMonth, i);
+      if (date.weekday == 1) {
+        _firstMondayCounter = i;
+        break;
+      }
+    }
   }
 }

@@ -17,13 +17,14 @@ final class HomeBloc extends Bloc {
 
   bool get stampedIn => _stampedIn;
 
-  final StreamController<Event> _eventStream = StreamController<Event>();
+  static final StreamController<Event> _eventStream = StreamController<Event>();
 
-  StreamController<Event> get eventStream => _eventStream;
+  static StreamController<Event> get eventStream => _eventStream;
 
   void login(final String username, final String password) {
     _username = username;
     _password = password;
+    ServerCommunication.initStatusPolling(username, password);
   }
 
   void stamp() {

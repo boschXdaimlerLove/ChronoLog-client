@@ -2,6 +2,7 @@ import 'package:bloc_implementation/bloc_implementation.dart';
 import 'package:chrono_log/blocs/calendar_day_bloc.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:chrono_log/storage/storage.dart';
+import 'package:chrono_log/views/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:string_translate/string_translate.dart' show Translate;
@@ -23,20 +24,23 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
     _bloc ??= BlocParent.of(context);
     _frames ??= Storage.getFramesForDay(_bloc!.day);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey.shade100,
-        foregroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text(
-          DateFormat('dd MMMM')
-              .format(
-                DateTime(_bloc!.day.year, _bloc!.day.month, _bloc!.day.day),
-              )
-              .toString()
-              .tr(),
-        ),
+      body: Column(
+        children: [
+          TopBar(
+            navigateBack: () => Navigator.of(context).pop(),
+            refreshCallback: () => setState(() {}),
+          ),
+          Expanded(child: _workTimeList),
+        ],
       ),
-      body: ListView.builder(
+    );
+  }
+
+  Widget get _workTimeList {
+    if (_frames!.isEmpty) {
+      return Center(child: Text('No work data available'.tr()));
+    } else {
+      return ListView.builder(
         itemCount: _frames!.length,
         itemBuilder: (_, counter) {
           final TimeFrame frame = _frames![counter];
@@ -117,8 +121,8 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
             ),
           );
         },
-      ),
-    );
+      );
+    }
   }
 
   DecoratedBox _getWorkingTimeHint(final TimeFrame frame) {

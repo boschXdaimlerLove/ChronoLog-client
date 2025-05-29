@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/api/api_calls.dart';
 import 'package:chrono_log/api/server_communication.dart';
@@ -7,8 +5,8 @@ import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/views/homescreen.dart';
+import 'package:chrono_log/views/top_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:string_translate/string_translate.dart' show Translate;
 
 final class LoginView extends StatefulWidget {
@@ -37,6 +35,7 @@ final class _LoginViewState extends State<LoginView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
+            TopBar(loggedIn: false, refreshCallback: () => setState(() {})),
             Spacer(flex: 1),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -124,40 +123,13 @@ final class _LoginViewState extends State<LoginView> {
   void _login() async {
     bool correct = false;
     String error = '';
-    Directory directory = await getApplicationSupportDirectory();
-    File file = File('${directory.path}/chronolog_log.txt');
-    /*
-    file.writeAsString('''
-    clear text:
-    username: $username,
-    password: $password
-
-    base64 encoded:
-    username: ${base64.encode(utf8.encode(username))}
-    passwort: ${base64.encode(utf8.encode(password))}
-
-    complete base64 encoded request:
-    Basic ${base64.encode(utf8.encode('$username:$password'))}
-
-    complete header:
-    'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization':
-          "Basic ${base64.encode(utf8.encode('$username:$password'))}"
-    ''', mode: FileMode.writeOnly);
-     */
     try {
       List<TimeFrame> frames = await ServerCommunication.getTimes(
         username,
         password,
       );
-      file.writeAsString('''
-      frames got fetched. Current frames: $frames
-      ''', mode: FileMode.write);
       for (TimeFrame frame in frames) {
         await Storage.storeNewTime(frame);
-        file.writeAsString('''
-        currently processing frame: $frame
-        ''', mode: FileMode.writeOnlyAppend);
       }
       correct = true;
     } catch (e) {
@@ -167,7 +139,6 @@ final class _LoginViewState extends State<LoginView> {
     if (correct) {
       _bloc!.login(username, password);
       if (mounted) {
-        file.writeAsString('Pushing new Route', mode: FileMode.writeOnlyAppend);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (_) => BlocParent(bloc: _bloc!, child: Homescreen()),

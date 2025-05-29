@@ -11,10 +11,24 @@ final class CalendarListBloc extends Bloc {
 
   void changeMonth({bool forward = true}) {
     if (forward) {
-      _currentMonth == 12 ? _currentMonth = 1 : _currentMonth++;
+      if (_currentMonth == 12) {
+        _currentMonth = 1;
+        _currentYear++;
+      } else {
+        _currentMonth++;
+      }
     } else {
-      _currentMonth == 1 ? _currentMonth = 12 : _currentMonth--;
+      if (_currentMonth == 1) {
+        _currentMonth = 12;
+        _currentYear--;
+      } else {
+        _currentMonth--;
+      }
     }
+  }
+
+  int get previousMonth {
+    return _currentMonth == 1 ? 12 : _currentMonth;
   }
 
   @override

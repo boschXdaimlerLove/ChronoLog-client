@@ -44,6 +44,7 @@ dependencies:
   string_translate: ^2.0.1
   modern_themes: ^2.0.0
   bloc_implementation: ^1.1.4
+  helpful_extensions: ^0.5.1
 
 dev_dependencies:
   flutter_test:
