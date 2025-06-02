@@ -1,25 +1,7 @@
-import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
+import 'package:bloc_implementation/bloc_implementation.dart';
 import 'package:chrono_log/blocs/calendar_day_bloc.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart'
-    show
-        BuildContext,
-        Center,
-        Color,
-        Colors,
-        ElevatedButton,
-        StatelessWidget,
-        Text,
-        Navigator,
-        MaterialPageRoute,
-        Widget,
-        ButtonStyle,
-        WidgetStateProperty,
-        BorderStyle,
-        BorderSide,
-        WidgetStatePropertyAll;
-
-import 'calendar_day_view.dart';
+import 'package:chrono_log/views/calendar/calendar_day_view.dart';
+import 'package:flutter/material.dart';
 
 final class CalendarListTile extends StatelessWidget {
   const CalendarListTile(this.date, {super.key, this.previousMonth = false});
@@ -46,14 +28,16 @@ final class CalendarListTile extends StatelessWidget {
         ),
       ),
       onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder:
-                (_) => BlocParent(
-                  bloc: CalendarDayBloc(date),
-                  child: CalendarDayView(),
-                ),
-          ),
+        showDialog(
+          context: context,
+          builder: (_) {
+            return Dialog(
+              child: BlocParent(
+                bloc: CalendarDayBloc(date),
+                child: CalendarDayView(),
+              ),
+            );
+          },
         );
       },
       child: Center(child: Text('${date.day}')),

@@ -42,7 +42,7 @@ final class _CalendarListViewState extends State<CalendarListView> {
                       _bloc!.changeMonth(forward: false);
                     });
                   },
-                  icon: Icon(Icons.arrow_back_ios),
+                  icon: const Icon(Icons.arrow_back_ios),
                 ),
                 Text(
                   DateFormat('MMMM yyyy')
@@ -102,12 +102,12 @@ final class _CalendarListViewState extends State<CalendarListView> {
                   _bloc!.currentYear,
                   _bloc!.currentMonth,
                 ) +
-                _firstMondayCounter,
+                _weekCountDifference,
             itemBuilder: (_, counter) {
               final int day = counter + 1;
-              if (day < _firstMondayCounter) {
+              if (day <= _weekCountDifference) {
                 final int daysInPreviousMonth = DateUtils.getDaysInMonth(
-                  _bloc!.currentYear,
+                  _bloc!.previousYearIfNecessary,
                   _bloc!.previousMonth,
                 );
                 return SizedBox(
@@ -115,9 +115,9 @@ final class _CalendarListViewState extends State<CalendarListView> {
                   height: 40,
                   child: CalendarListTile(
                     DateTime(
-                      _bloc!.currentYear,
-                      _bloc!.currentMonth - 1,
-                      daysInPreviousMonth - (_firstMondayCounter - day - 1),
+                      _bloc!.previousYearIfNecessary,
+                      _bloc!.previousMonth,
+                      daysInPreviousMonth - (day - _weekCountDifference).abs(),
                     ),
                     previousMonth: true,
                   ),
@@ -130,7 +130,7 @@ final class _CalendarListViewState extends State<CalendarListView> {
                     DateTime(
                       _bloc!.currentYear,
                       _bloc!.currentMonth,
-                      day - _firstMondayCounter + 1,
+                      day - _weekCountDifference,
                     ),
                   ),
                 );
@@ -140,6 +140,14 @@ final class _CalendarListViewState extends State<CalendarListView> {
         ),
       ],
     );
+  }
+
+  int get _weekCountDifference {
+    if (_firstMondayCounter == 1) {
+      return 0;
+    } else {
+      return 8 - _firstMondayCounter;
+    }
   }
 
   void _findFirstMonday() {

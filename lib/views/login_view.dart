@@ -1,10 +1,12 @@
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/api/api_calls.dart';
 import 'package:chrono_log/api/server_communication.dart';
+import 'package:chrono_log/blocs/event_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
+import 'package:chrono_log/main.dart';
+import 'package:chrono_log/models/events/login_event.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:chrono_log/storage/storage.dart';
-import 'package:chrono_log/views/homescreen.dart';
 import 'package:chrono_log/views/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart' show Translate;
@@ -35,7 +37,7 @@ final class _LoginViewState extends State<LoginView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            TopBar(loggedIn: false, refreshCallback: () => setState(() {})),
+            _topBar,
             Spacer(flex: 1),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -120,6 +122,14 @@ final class _LoginViewState extends State<LoginView> {
     );
   }
 
+  Widget get _topBar {
+    if (isWindowsOrLinux) {
+      return TopBar(loggedIn: false, refreshCallback: () => setState(() {}));
+    } else {
+      return Container();
+    }
+  }
+
   void _login() async {
     bool correct = false;
     String error = '';
@@ -139,12 +149,15 @@ final class _LoginViewState extends State<LoginView> {
     if (correct) {
       _bloc!.login(username, password);
       if (mounted) {
+        /*
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (_) => BlocParent(bloc: _bloc!, child: Homescreen()),
           ),
         );
+        */
       }
+      EventBloc.eventStream.sink.add(LoginEvent());
     } else {
       if (mounted) {
         showDialog(
@@ -155,10 +168,10 @@ final class _LoginViewState extends State<LoginView> {
                 'Login error'.tr(),
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              content: Text('''
-                  There's been an error logging you in. You either entered the wrong login data, or there is no internet connection.
-                  $error with connection ${APICalls.getGetTimesAPICall()}
-                    ''', style: TextStyle(fontWeight: FontWeight.w300)),
+              content: Text(
+                'There\'s been an error logging you in.\nYou either entered the wrong login data, or there is no internet connection. $error with connection ${APICalls.getGetTimesAPICall()}',
+                style: TextStyle(fontWeight: FontWeight.w300),
+              ),
               actions: [
                 TextButton(
                   onPressed: () {

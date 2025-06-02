@@ -2,7 +2,6 @@ import 'package:bloc_implementation/bloc_implementation.dart';
 import 'package:chrono_log/blocs/calendar_day_bloc.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:chrono_log/storage/storage.dart';
-import 'package:chrono_log/views/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:string_translate/string_translate.dart' show Translate;
@@ -23,15 +22,11 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
   Widget build(BuildContext context) {
     _bloc ??= BlocParent.of(context);
     _frames ??= Storage.getFramesForDay(_bloc!.day);
-    return Scaffold(
-      body: Column(
-        children: [
-          TopBar(
-            navigateBack: () => Navigator.of(context).pop(),
-            refreshCallback: () => setState(() {}),
-          ),
-          Expanded(child: _workTimeList),
-        ],
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 400, maxWidth: 600),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(child: Expanded(child: _workTimeList)),
       ),
     );
   }

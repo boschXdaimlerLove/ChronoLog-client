@@ -28,7 +28,11 @@ final class CalendarListBloc extends Bloc {
   }
 
   int get previousMonth {
-    return _currentMonth == 1 ? 12 : _currentMonth;
+    return _currentMonth == 1 ? 12 : _currentMonth - 1;
+  }
+
+  int get previousYearIfNecessary {
+    return _currentMonth == 1 ? _currentYear - 1 : _currentYear;
   }
 
   @override

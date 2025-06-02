@@ -168,6 +168,18 @@ Map<String, Map<Locale, String>> _translations = {
         'Möchtest du dich wirklich ausloggen?\nDu wirst'
         ' dich erneut einloggen müssen um unsere Dienste zu nutzen',
   },
+  'Back': {
+    TranslationLocales.english: 'Back',
+    TranslationLocales.german: 'Zurück',
+  },
+  'read': {
+    TranslationLocales.english: 'read',
+    TranslationLocales.german: 'gelesen',
+  },
+  'delete': {
+    TranslationLocales.english: 'delete',
+    TranslationLocales.german: 'löschen',
+  },
 };
 
 HashMap<String, Map<Locale, String>> get translations {

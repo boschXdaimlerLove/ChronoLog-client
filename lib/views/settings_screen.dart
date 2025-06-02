@@ -61,6 +61,16 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 24,
             children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    'Change password'.tr(),
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
               TextField(
                 enableIMEPersonalizedLearning: false,
                 enableInteractiveSelection: true,

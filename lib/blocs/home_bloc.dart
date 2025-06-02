@@ -1,8 +1,7 @@
-import 'dart:async' show StreamController;
-
 import 'package:bloc_implementation/bloc_implementation.dart' show Bloc;
 import 'package:chrono_log/api/server_communication.dart';
-import 'package:chrono_log/models/events/event.dart';
+import 'package:chrono_log/blocs/event_bloc.dart';
+import 'package:chrono_log/models/events/login_event.dart';
 
 final class HomeBloc extends Bloc {
   String _username = '';
@@ -17,14 +16,16 @@ final class HomeBloc extends Bloc {
 
   bool get stampedIn => _stampedIn;
 
-  static final StreamController<Event> _eventStream = StreamController<Event>();
+  bool _loggedIn = false;
 
-  static StreamController<Event> get eventStream => _eventStream;
+  bool get loggedIn => _loggedIn;
 
   void login(final String username, final String password) {
     _username = username;
     _password = password;
     ServerCommunication.initStatusPolling(username, password);
+    EventBloc.eventStream.sink.add(const LoginEvent());
+    _loggedIn = true;
   }
 
   void stamp() {
@@ -42,6 +43,6 @@ final class HomeBloc extends Bloc {
     _username = '';
     _password = '';
     _stampedIn = false;
-    _eventStream.close();
+    _loggedIn = false;
   }
 }

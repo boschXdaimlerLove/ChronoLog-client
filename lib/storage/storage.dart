@@ -59,6 +59,21 @@ final class Storage {
     }
   }
 
+  static void deleteNotification(Notification notification) async {
+    final int index = _notificationList.indexOf(notification);
+    _notificationList.remove(notification);
+    await _notificationBox!.delete('Notification $index');
+  }
+
+  static Future<void> storeNewNotification(Notification notification) async {
+    _notificationList.add(notification);
+    await _notificationBox!.clear();
+    for (int i = 0; i < _notificationList.length; i++) {
+      final String key = 'Notification $i';
+      await _notificationBox!.put(key, _notificationList[i]);
+    }
+  }
+
   static Future<void> storeNewTime(TimeFrame time) async {
     _frameList.add(time);
     await _frameBox!.clear();
