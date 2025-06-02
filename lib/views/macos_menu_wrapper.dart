@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:async' show StreamSubscription;
 
 import 'package:chrono_log/blocs/event_bloc.dart';
 import 'package:chrono_log/main.dart';
@@ -6,9 +6,10 @@ import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/login_event.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
 import 'package:flutter/material.dart';
-import 'package:string_translate/string_translate.dart';
+import 'package:string_translate/string_translate.dart'
+    show Translate, Translation, TranslationLocales;
 
-class MacosMenuWrapper extends StatefulWidget {
+final class MacosMenuWrapper extends StatefulWidget {
   const MacosMenuWrapper({
     super.key,
     required this.child,

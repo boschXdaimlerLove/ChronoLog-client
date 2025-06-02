@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:bloc_implementation/bloc_implementation.dart';
+import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/event_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/control/quit_intent.dart';
@@ -14,7 +14,7 @@ import 'package:chrono_log/views/homescreen.dart';
 import 'package:chrono_log/views/login_view.dart';
 import 'package:chrono_log/views/macos_menu_wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_ce_flutter/adapters.dart';
 import 'package:modern_themes/modern_themes.dart' show Themes;

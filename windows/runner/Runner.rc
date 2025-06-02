@@ -93,9 +93,9 @@ BEGIN
             VALUE "FileDescription", "chrono_log" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "chrono_log" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 edu.jules.bachelor.chronolog. All rights reserved." "\0"
-            VALUE "OriginalFilename", "chrono_log.exe" "\0"
-            VALUE "ProductName", "chrono_log" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 ChronoLog Team. All rights reserved." "\0"
+            VALUE "OriginalFilename", "ChronoLog.exe" "\0"
+            VALUE "ProductName", "ChronoLog" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
