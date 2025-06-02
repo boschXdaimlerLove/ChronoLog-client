@@ -13,14 +13,14 @@ class MacosMenuWrapper extends StatefulWidget {
     super.key,
     required this.child,
     required this.reloadCallback,
-    required this.context,
+    required this.navigatorKey,
   });
 
   final Widget child;
 
   final Function() reloadCallback;
 
-  final BuildContext context;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   State<MacosMenuWrapper> createState() => _MacosMenuWrapperState();
@@ -64,7 +64,27 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
             PlatformMenuItem(
               label: 'About'.tr(),
               onSelected: () {
-                showAboutDialog(context: widget.context);
+                showAboutDialog(
+                  context: widget.navigatorKey.currentContext!,
+                  applicationName: 'ChronoLog',
+                  applicationLegalese: '© 2025 ChronoLog Team',
+                  applicationVersion: '1.0.0',
+                  applicationIcon: Image.asset(
+                    'assets/app_icon.png',
+                    width: 50,
+                    height: 50,
+                  ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Divider(),
+                    ),
+                    Text('More information', style: TextStyle(fontSize: 18)),
+                    Text(
+                      'This software is only developed for a project for the bachelor of science on the DHBW Stuttgart.\nIt is not applicable for commercial use.',
+                    ),
+                  ],
+                );
               },
             ),
           ],

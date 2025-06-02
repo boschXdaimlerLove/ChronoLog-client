@@ -5,7 +5,7 @@ import 'package:chrono_log/api/api_calls.dart';
 import 'package:chrono_log/api/internal_server_error.dart';
 import 'package:chrono_log/errors/server_not_found_error.dart';
 import 'package:chrono_log/models/time_frame.dart';
-import 'package:http/http.dart' as http show get, post, put, Response;
+import 'package:http/http.dart' as http show get, patch, post, put, Response;
 
 /// Communicates with the backend server via API calls
 final class ServerCommunication {
@@ -144,15 +144,15 @@ final class ServerCommunication {
     String newPassword,
   ) {
     Map<String, dynamic> data = {
-      'username': username,
       'old_password': oldPassword,
       'new_password': newPassword,
     };
-    http.put(
+    http.patch(
       Uri.parse(APICalls.getUpdatePasswordAPICall()),
       headers: getHeaders(username, oldPassword),
       body: jsonEncode(data),
     );
+    // TODO: response: 200 -> good, 401 -> old password incorrect
   }
 
   static Future<http.Response> getStatus(

@@ -48,6 +48,7 @@ final class ChronoLogApp extends StatefulWidget {
 }
 
 final class _ChronoLogAppState extends State<ChronoLogApp> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Widget? _child;
 
   final HomeBloc _bloc = HomeBloc();
@@ -101,42 +102,42 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MacosMenuWrapper(
-      context: context,
-      reloadCallback: () => setState(() {}),
-      child: MaterialApp(
-        // Locales
-        localizationsDelegates: TranslationDelegates.localizationDelegates,
-        locale: Translation.activeLocale,
-        supportedLocales: Translation.supportedLocales,
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      // Locales
+      localizationsDelegates: TranslationDelegates.localizationDelegates,
+      locale: Translation.activeLocale,
+      supportedLocales: Translation.supportedLocales,
 
-        // Debug
-        debugShowMaterialGrid: false,
-        showSemanticsDebugger: false,
-        showPerformanceOverlay: false,
-        checkerboardRasterCacheImages: false,
-        checkerboardOffscreenLayers: false,
-        debugShowCheckedModeBanner: true,
+      // Debug
+      debugShowMaterialGrid: false,
+      showSemanticsDebugger: false,
+      showPerformanceOverlay: false,
+      checkerboardRasterCacheImages: false,
+      checkerboardOffscreenLayers: false,
+      debugShowCheckedModeBanner: true,
 
-        // Themes
-        themeMode: Themes.themeMode,
-        theme: Themes.lightTheme,
-        darkTheme: Themes.darkTheme,
-        highContrastTheme: Themes.highContrastLightTheme,
-        highContrastDarkTheme: Themes.highContrastDarkTheme,
+      // Themes
+      themeMode: Themes.themeMode,
+      theme: Themes.lightTheme,
+      darkTheme: Themes.darkTheme,
+      highContrastTheme: Themes.highContrastLightTheme,
+      highContrastDarkTheme: Themes.highContrastDarkTheme,
 
-        // General
-        scrollBehavior: const MaterialScrollBehavior(),
-        title: 'BBQ Worktime Management',
+      // General
+      scrollBehavior: const MaterialScrollBehavior(),
+      title: 'BBQ Worktime Management',
 
-        // Screens
-        home: _child,
-
-        shortcuts: {
-          SingleActivator(LogicalKeyboardKey.keyQ, meta: true): QuitIntent(),
-        },
-        actions: {QuitIntent: QuitAction()},
+      // Screens
+      home: MacosMenuWrapper(
+        reloadCallback: () => setState(() {}),
+        navigatorKey: navigatorKey,
+        child: _child!,
       ),
+      shortcuts: {
+        SingleActivator(LogicalKeyboardKey.keyQ, meta: true): QuitIntent(),
+      },
+      actions: {QuitIntent: QuitAction()},
     );
   }
 }

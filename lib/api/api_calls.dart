@@ -24,7 +24,7 @@ final class APICalls {
   }
 
   static String getUpdatePasswordAPICall() {
-    return '$host/settings/update-password'; // Update password to new password
+    return '$host/settings/password'; // Update password to new password
   }
 
   static String getStatusAPICall() {
