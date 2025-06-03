@@ -38,13 +38,11 @@ void main() async {
         requestSoundPermission: true,
         notificationCategories: [DarwinNotificationCategory('plainCategory')],
       );
-
   final LinuxInitializationSettings initializationSettingsLinux =
       LinuxInitializationSettings(
         defaultActionName: 'Open notification',
         defaultIcon: AssetsLinuxIcon('icons/app_icon.png'),
       );
-
   final WindowsInitializationSettings windowsInitializationSettings =
       WindowsInitializationSettings(
         appName: 'ChronoLog',
@@ -52,26 +50,14 @@ void main() async {
         guid: UniqueKey().toString(),
         iconPath: 'assets/app_icon.png',
       );
-
   final InitializationSettings initializationSettings = InitializationSettings(
     macOS: initializationSettingsDarwin,
     windows: windowsInitializationSettings,
     linux: initializationSettingsLinux,
   );
-
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   runApp(const ChronoLogApp());
-}
-
-Future<void> _requestPermissions() async {
-  if (Platform.isMacOS) {
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          MacOSFlutterLocalNotificationsPlugin
-        >()
-        ?.requestPermissions(alert: true, badge: true, sound: true);
-  }
 }
 
 bool get isWindowsOrLinux {
