@@ -81,7 +81,7 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: Text(
-                              'End:   ${DateFormat('hh:mm').format(frame.end)}',
+                              'End:   ${frame.end != null ? DateFormat('hh:mm').format(frame.end!) : 'Unfinished'.tr()}',
                             ),
                           ),
                         ),

@@ -5,10 +5,6 @@ import 'package:string_translate/string_translate.dart'
     show TranslationLocales, StandardTranslations;
 
 Map<String, Map<Locale, String>> _translations = {
-  'No unread messages': {
-    TranslationLocales.english: 'No unread messages',
-    TranslationLocales.german: 'Keine ungelesenen Nachrichten',
-  },
   'BBQ Working Time Management': {
     TranslationLocales.english: 'BBQ Working Time Management',
     TranslationLocales.german: 'BBQ Arbeitszeit Management',
@@ -41,7 +37,8 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: 'Login error',
     TranslationLocales.german: 'Fehler beim Login',
   },
-  // Months
+
+  /* MONTHS */
   'January': {
     TranslationLocales.english: 'January',
     TranslationLocales.german: 'Januar',
@@ -87,6 +84,8 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: 'December',
     TranslationLocales.german: 'Dezember',
   },
+
+  /* DAYS */
   ' Monday': {
     TranslationLocales.english: ' Monday',
     TranslationLocales.german: ' Montag',
@@ -115,6 +114,8 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: '  Sunday ',
     TranslationLocales.german: ' Sonntag ',
   },
+
+  /* SETTINGS */
   'Settings': {
     TranslationLocales.english: 'Settings',
     TranslationLocales.german: 'Einstellungen',
@@ -195,6 +196,47 @@ Map<String, Map<Locale, String>> _translations = {
   'Default': {
     TranslationLocales.english: 'Default',
     TranslationLocales.german: 'Standard',
+  },
+
+  /* NOTIFICATIONS */
+  'Working too long': {
+    TranslationLocales.english: 'Working too long',
+    TranslationLocales.german: 'Zu langes arbeiten',
+  },
+  'You\'ve worked too long for today. End work and go home': {
+    TranslationLocales.english:
+        'You\'ve worked too long for today. End work and go home',
+    TranslationLocales.german:
+        'Du hast heute zu lange gearbeitet. Beende die Arbeit ung gehe heim',
+  },
+  'Break needed': {
+    TranslationLocales.english: 'Break needed',
+    TranslationLocales.german: 'Pause benötigt',
+  },
+  'You\'ve worked to long without a break, consider taking a break': {
+    TranslationLocales.english:
+        'You\'ve worked to long without a break, consider taking a break',
+    TranslationLocales.german:
+        'Du hast zu lange ohne Pause gearbeitet, nimm eine Pause',
+  },
+  'Holiday': {
+    TranslationLocales.english: 'Holiday',
+    TranslationLocales.german: 'Ferien',
+  },
+  'Today\'s a holiday, you shouldn\'t work today': {
+    TranslationLocales.english: 'Today\'s a holiday, you shouldn\'t work today',
+    TranslationLocales.german:
+        'Heute ist ein Feiertag, du solltest heute nicht arbeiten',
+  },
+  'Not logged in': {
+    TranslationLocales.english: 'Not logged in',
+    TranslationLocales.german: 'Nicht eingelogged',
+  },
+  'You\'re not logged in, please log in before trying to start work': {
+    TranslationLocales.english:
+        'You\'re not logged in, please log in before trying to start work',
+    TranslationLocales.german:
+        'Du bist nicht eingelogged, bitte log dich ein, bevor du die Arbeit startest',
   },
 };
 

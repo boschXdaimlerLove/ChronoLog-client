@@ -26,7 +26,7 @@ final class _HomescreenState extends State<Homescreen> {
 
   Widget get _notificationColumn {
     if (_bloc!.notifications.isEmpty) {
-      return Text('No unread messages'.tr());
+      return Center(child: Text('No unread messages'.tr()));
     } else {
       return ListView.builder(
         itemCount: _bloc!.notifications.length,

@@ -11,15 +11,17 @@ final class TimeFrame {
   DateTime start;
 
   @HiveField(1)
-  DateTime end;
+  DateTime? end;
 
   TimeFrame(this.start, this.end) {
-    if (start.year != end.year ||
-        start.month != end.month ||
-        start.day != end.day) {
+    if (start.year != end!.year ||
+        start.month != end!.month ||
+        start.day != end!.day) {
       throw CrossDayTimeFrameError();
     }
   }
+
+  TimeFrame.unfinished(this.start);
 
   factory TimeFrame.fromJSON(Map<String, dynamic> json) {
     return switch (json) {
@@ -32,7 +34,7 @@ final class TimeFrame {
   }
 
   Duration getWorkingTime() {
-    return end.difference(start);
+    return end?.difference(start) ?? DateTime.now().difference(start);
   }
 
   String getWorkingTimeRepresentation() {
@@ -48,7 +50,7 @@ final class TimeFrame {
   Map<String, dynamic> toJSON() {
     return {
       'start': start.toUtc().toIso8601String(),
-      'end': end.toUtc().toIso8601String(),
+      'end': end?.toUtc().toIso8601String(),
     };
   }
 

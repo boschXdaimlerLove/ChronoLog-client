@@ -69,17 +69,17 @@ final class HomeBloc extends Bloc {
 
   Future<void> stamp() async {
     if (_stampedIn) {
-      ServerCommunication.endWork(username, password);
-      final List<TimeFrame> times = await ServerCommunication.getTimes(
+      DateTime endTime = await ServerCommunication.endWork(username, password);
+      TimeFrame unfinishedFrame = Storage.getLastUnfinishedTimeFrame();
+      unfinishedFrame.end = endTime;
+      Storage.updateUnfinishedTimeFrame(unfinishedFrame);
+      _stampedIn = false;
+    } else {
+      DateTime unfinishedStartTime = await ServerCommunication.startWork(
         username,
         password,
       );
-      for (TimeFrame frame in times) {
-        Storage.storeNewTime(frame);
-      }
-      _stampedIn = false;
-    } else {
-      ServerCommunication.startWork(username, password);
+      Storage.storeNewTime(TimeFrame.unfinished(unfinishedStartTime));
       _stampedIn = true;
     }
   }

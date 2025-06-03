@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:async' show Timer;
 import 'dart:convert' show base64, jsonDecode, jsonEncode, utf8;
 
 import 'package:chrono_log/api/api_calls.dart';
@@ -25,7 +25,8 @@ final class ServerCommunication {
       switch (response.body) {
         case '1':
           title = 'Working too long'.tr();
-          message = 'You\'ve worked to longshow for today, go home'.tr();
+          message =
+              'You\'ve worked too long for today. End work and go home'.tr();
           flutterLocalNotificationsPlugin.show(
             UniqueKey().hashCode,
             title,
@@ -117,22 +118,30 @@ final class ServerCommunication {
     }
   }
 
-  static void startWork(final String username, final String password) async {
+  static Future<DateTime> startWork(
+    final String username,
+    final String password,
+  ) async {
     final http.Response response = await http.post(
       Uri.parse(APICalls.getStartTimeAPICall()),
       headers: getHeaders(username, password),
     );
     // TODO: handle stamp in time
     handleResponse(response);
+    return DateTime.parse(response.body);
   }
 
-  static void endWork(final String username, final String password) async {
+  static Future<DateTime> endWork(
+    final String username,
+    final String password,
+  ) async {
     final http.Response response = await http.post(
       Uri.parse(APICalls.getEndTimeAPICall()),
       headers: getHeaders(username, password),
     );
     // TODO: handle stamp out time
     handleResponse(response);
+    return DateTime.parse(response.body);
   }
 
   static Future<List<TimeFrame>> getTimes(

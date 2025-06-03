@@ -89,6 +89,18 @@ final class Storage {
     return _frameList.where((frame) => _frameInDay(frame, date)).toList();
   }
 
+  static TimeFrame getLastUnfinishedTimeFrame() {
+    return _frameList.where((frame) => frame.end == null).first;
+  }
+
+  static void updateUnfinishedTimeFrame(TimeFrame newFrame) {
+    TimeFrame unfinished = getLastUnfinishedTimeFrame();
+    int index = _frameList.indexOf(unfinished);
+    _frameList.remove(unfinished);
+    _frameBox!.delete('TimeFrame $index');
+    storeNewTime(newFrame);
+  }
+
   static bool _frameInDay(final TimeFrame frame, final DateTime date) {
     return frame.start.day == date.day &&
         frame.start.month == date.month &&
