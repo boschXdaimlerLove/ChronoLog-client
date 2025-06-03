@@ -26,7 +26,7 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
       constraints: BoxConstraints(maxHeight: 400, maxWidth: 600),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(child: Expanded(child: _workTimeList)),
+        child: Center(child: _workTimeList),
       ),
     );
   }

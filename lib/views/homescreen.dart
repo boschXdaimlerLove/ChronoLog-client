@@ -3,7 +3,6 @@ import 'package:chrono_log/blocs/calendar_list_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/main.dart';
 import 'package:chrono_log/models/notification.dart';
-import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/views/calendar/calendar_list_view.dart';
 import 'package:chrono_log/views/top_bar.dart';
 import 'package:flutter/material.dart' hide Notification;
@@ -19,25 +18,20 @@ final class Homescreen extends StatefulWidget {
 final class _HomescreenState extends State<Homescreen> {
   HomeBloc? _bloc;
 
-  List<Notification> _notifications = [];
-
   @override
   Widget build(BuildContext context) {
     _bloc ??= BlocParent.of(context);
-    _notifications = List.from(Storage.notifications);
-    _notifications.sort((a, b) => a.alreadyRead ? 1 : -1);
-
     return Scaffold(body: _body);
   }
 
   Widget get _notificationColumn {
-    if (_notifications.isEmpty) {
+    if (_bloc!.notifications.isEmpty) {
       return Text('No unread messages'.tr());
     } else {
       return ListView.builder(
-        itemCount: _notifications.length,
+        itemCount: _bloc!.notifications.length,
         itemBuilder: (_, counter) {
-          final Notification notification = _notifications[counter];
+          final Notification notification = _bloc!.notifications[counter];
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: DecoratedBox(
@@ -107,8 +101,7 @@ final class _HomescreenState extends State<Homescreen> {
       TextButton(
         onPressed:
             () => setState(() {
-              Storage.deleteNotification(notification);
-              _notifications.remove(notification);
+              _bloc!.deleteNotification(notification);
             }),
         child: Text('delete'.tr()),
       ),
@@ -169,7 +162,10 @@ final class _HomescreenState extends State<Homescreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: TextButton(
-                              onPressed: () => setState(() => _bloc!.stamp()),
+                              onPressed: () async {
+                                await _bloc!.stamp();
+                                setState(() {});
+                              },
                               child: Text(
                                 _bloc!.stampedIn
                                     ? 'end work'.tr()

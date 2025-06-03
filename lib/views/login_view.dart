@@ -1,14 +1,16 @@
+import 'dart:io' show Platform;
+
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/api/api_calls.dart';
 import 'package:chrono_log/api/server_communication.dart';
-import 'package:chrono_log/blocs/event_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/main.dart';
-import 'package:chrono_log/models/events/login_event.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/views/top_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    show MacOSFlutterLocalNotificationsPlugin;
 import 'package:string_translate/string_translate.dart' show Translate;
 
 final class LoginView extends StatefulWidget {
@@ -19,6 +21,16 @@ final class LoginView extends StatefulWidget {
 }
 
 final class _LoginViewState extends State<LoginView> {
+  Future<void> _requestPermissions() async {
+    if (Platform.isMacOS) {
+      flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            MacOSFlutterLocalNotificationsPlugin
+          >()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
+    }
+  }
+
   String username = '';
 
   String password = '';
@@ -27,6 +39,8 @@ final class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    /* LOCAL NOTIFICATIONS PLUGIN */
+    _requestPermissions();
     _bloc ??= BlocParent.of(context);
 
     final Size size = MediaQuery.of(context).size;
@@ -157,7 +171,6 @@ final class _LoginViewState extends State<LoginView> {
         );
         */
       }
-      EventBloc.eventStream.sink.add(LoginEvent());
     } else {
       if (mounted) {
         showDialog(

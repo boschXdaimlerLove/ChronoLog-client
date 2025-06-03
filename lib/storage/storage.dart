@@ -75,11 +75,13 @@ final class Storage {
   }
 
   static Future<void> storeNewTime(TimeFrame time) async {
-    _frameList.add(time);
-    await _frameBox!.clear();
-    for (int i = 0; i < _frameList.length; i++) {
-      final String key = 'TimeFrame $i';
-      await _frameBox!.put(key, _frameList[i]);
+    if (!_frameList.contains(time)) {
+      _frameList.add(time);
+      await _frameBox!.clear();
+      for (int i = 0; i < _frameList.length; i++) {
+        final String key = 'TimeFrame $i';
+        await _frameBox!.put(key, _frameList[i]);
+      }
     }
   }
 

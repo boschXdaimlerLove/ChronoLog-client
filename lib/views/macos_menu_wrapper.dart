@@ -1,11 +1,17 @@
 import 'dart:async' show StreamSubscription;
 
+import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/event_bloc.dart';
+import 'package:chrono_log/blocs/settings_bloc.dart';
 import 'package:chrono_log/main.dart';
 import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/login_event.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
-import 'package:flutter/material.dart';
+import 'package:chrono_log/models/events/notification_triggered_event.dart';
+import 'package:chrono_log/models/notification.dart';
+import 'package:chrono_log/views/settings_screen.dart';
+import 'package:flutter/material.dart' hide Notification;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:string_translate/string_translate.dart'
     show Translate, Translation, TranslationLocales;
 
@@ -32,6 +38,8 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
 
   StreamSubscription<Event>? _eventSubscription;
 
+  String _username = '';
+
   @override
   void initState() {
     _eventSubscription = EventBloc.eventStream.stream.listen((event) {
@@ -39,6 +47,7 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
         _isLoggedIn = false;
       } else if (event is LoginEvent) {
         _isLoggedIn = true;
+        _username = event.username;
       }
     });
     super.initState();
@@ -48,7 +57,7 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
   Widget build(BuildContext context) {
     if (isMacOS) {
       return PlatformMenuBar(
-        menus: [_defaultMenu, _logOutMenu, _settingsMenu],
+        menus: [_defaultMenu, _logOutMenu, _settingsMenu, _debugMenu],
         child: widget.child,
       );
     } else {
@@ -140,7 +149,58 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
                 ),
               ],
             ),
+            PlatformMenuItem(
+              label: 'Change password'.tr(),
+              onSelected:
+                  _isLoggedIn
+                      ? () {
+                        showDialog(
+                          context: widget.navigatorKey.currentContext!,
+                          builder: (_) {
+                            return Dialog(
+                              child: BlocParent(
+                                bloc: SettingsBloc(_username),
+                                child: PasswordSettingsScreen(),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                      : null,
+            ),
           ],
+        ),
+      ],
+    );
+  }
+
+  PlatformMenu get _debugMenu {
+    return PlatformMenu(
+      label: 'Debug',
+      menus: [
+        PlatformMenuItem(
+          label: 'Show notification',
+          onSelected: () {
+            flutterLocalNotificationsPlugin.show(
+              UniqueKey().hashCode,
+              'Debug Notification',
+              'This is a debug notification shown to test the plugin',
+              NotificationDetails(
+                macOS: DarwinNotificationDetails(presentBadge: true),
+                windows: WindowsNotificationDetails(
+                  duration: WindowsNotificationDuration.long,
+                ),
+                linux: LinuxNotificationDetails(
+                  category: LinuxNotificationCategory.presence,
+                ),
+              ),
+            );
+            EventBloc.eventStream.sink.add(
+              NotificationTriggeredEvent(
+                Notification('Debug notification', ('Debugging..')),
+              ),
+            );
+          },
         ),
       ],
     );

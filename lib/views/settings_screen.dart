@@ -1,3 +1,4 @@
+import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/settings_bloc.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //_bloc ??= BlocParent.of(context);
+    _bloc ??= BlocParent.of(context);
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 400, maxWidth: 600),
       child: Padding(
@@ -97,7 +98,7 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
                 ),
                 obscureText: _oldPasswordObscured,
                 obscuringCharacter: '*',
-                onSubmitted: (oldPassword) => _bloc!.oldPassword = oldPassword,
+                onChanged: (oldPassword) => _bloc!.oldPassword = oldPassword,
               ),
               TextField(
                 enableIMEPersonalizedLearning: false,
@@ -125,7 +126,7 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
                 ),
                 obscureText: _newPasswordObscured,
                 obscuringCharacter: '*',
-                onSubmitted: (newPassword) => _bloc!.newPassword = newPassword,
+                onChanged: (newPassword) => _bloc!.newPassword = newPassword,
               ),
               TextField(
                 enableIMEPersonalizedLearning: false,
@@ -154,12 +155,15 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
                 ),
                 obscureText: _newPasswordConfirmObscured,
                 obscuringCharacter: '*',
-                onSubmitted:
+                onChanged:
                     (newPasswordConfirm) =>
                         _bloc!.newPasswordConfirm = newPasswordConfirm,
               ),
               TextButton(
-                onPressed: () => _bloc!.submit(),
+                onPressed: () {
+                  _bloc!.submit();
+                  Navigator.of(context).pop();
+                },
                 child: Text('submit'.tr()),
               ),
             ],

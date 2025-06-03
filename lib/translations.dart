@@ -131,6 +131,10 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: 'change language',
     TranslationLocales.german: 'Sprache ändern',
   },
+  'Change language': {
+    TranslationLocales.english: 'Change language',
+    TranslationLocales.german: 'Sprache ändern',
+  },
   'change password': {
     TranslationLocales.english: 'change password',
     TranslationLocales.german: 'Passwort ändern',
@@ -179,6 +183,18 @@ Map<String, Map<Locale, String>> _translations = {
   'delete': {
     TranslationLocales.english: 'delete',
     TranslationLocales.german: 'löschen',
+  },
+  'About': {
+    TranslationLocales.english: 'About',
+    TranslationLocales.german: 'Über',
+  },
+  'User': {
+    TranslationLocales.english: 'User',
+    TranslationLocales.german: 'Nutzer',
+  },
+  'Default': {
+    TranslationLocales.english: 'Default',
+    TranslationLocales.german: 'Standard',
   },
 };
 

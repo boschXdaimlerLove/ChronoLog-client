@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/event_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
+import 'package:chrono_log/control/escape_intent.dart';
 import 'package:chrono_log/control/quit_intent.dart';
 import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/login_event.dart';
@@ -21,11 +22,56 @@ import 'package:modern_themes/modern_themes.dart' show Themes;
 import 'package:string_translate/string_translate.dart'
     hide StandardTranslations;
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Storage.init();
+
+  /* LOCAL NOTIFICATION PACKAGE */
+  final DarwinInitializationSettings initializationSettingsDarwin =
+      DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+        notificationCategories: [DarwinNotificationCategory('plainCategory')],
+      );
+
+  final LinuxInitializationSettings initializationSettingsLinux =
+      LinuxInitializationSettings(
+        defaultActionName: 'Open notification',
+        defaultIcon: AssetsLinuxIcon('icons/app_icon.png'),
+      );
+
+  final WindowsInitializationSettings windowsInitializationSettings =
+      WindowsInitializationSettings(
+        appName: 'ChronoLog',
+        appUserModelId: 'edu.jules.bachelor.chronolog',
+        guid: UniqueKey().toString(),
+        iconPath: 'assets/app_icon.png',
+      );
+
+  final InitializationSettings initializationSettings = InitializationSettings(
+    macOS: initializationSettingsDarwin,
+    windows: windowsInitializationSettings,
+    linux: initializationSettingsLinux,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
   runApp(const ChronoLogApp());
+}
+
+Future<void> _requestPermissions() async {
+  if (Platform.isMacOS) {
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          MacOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
+  }
 }
 
 bool get isWindowsOrLinux {
@@ -34,6 +80,10 @@ bool get isWindowsOrLinux {
 
 bool get isMacOS {
   return Platform.isMacOS;
+}
+
+bool get isDesktop {
+  return isMacOS || isWindowsOrLinux;
 }
 
 bool get isMobile {
@@ -51,26 +101,29 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Widget? _child;
 
-  final HomeBloc _bloc = HomeBloc();
+  HomeBloc? _bloc;
 
   void _handleEvents(Event event) {
     if (event is LogoutEvent) {
-      if (_bloc.stampedIn) {
-        _bloc.stamp();
+      if (_bloc!.stampedIn) {
+        _bloc!.stamp();
       }
       setState(() {
-        _child = BlocParent(bloc: _bloc, child: LoginView());
+        _child = BlocParent(bloc: _bloc!, child: LoginView());
       });
     } else if (event is LoginEvent) {
       setState(() {
-        _child = BlocParent(bloc: _bloc, child: Homescreen());
+        _child = BlocParent(bloc: _bloc!, child: Homescreen());
       });
     }
   }
 
   @override
   void initState() {
-    _child = BlocParent(bloc: _bloc, child: LoginView());
+    _bloc = HomeBloc(() {
+      setState(() {});
+    });
+    _child = BlocParent(bloc: _bloc!, child: LoginView());
     EventBloc.eventStream.stream.listen((event) => _handleEvents(event));
     /* TRANSLATION PACKAGE */
     Translation.init(
@@ -78,22 +131,6 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
       defaultLocale: TranslationLocales.english,
       translations: translations,
     );
-    /* LOCAL NOTIFICATION PACKAGE */
-    final DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
-          notificationCategories: [],
-        );
-
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-          macOS: initializationSettingsDarwin,
-          // TODO: init windows settings
-          //windows: ,
-        );
-
     /* THEME PACKAGE */
     Themes.lightTheme = chronoLogLightTheme;
     Themes.darkTheme = chronoLogDarkTheme;
@@ -136,8 +173,9 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
       ),
       shortcuts: {
         SingleActivator(LogicalKeyboardKey.keyQ, meta: true): QuitIntent(),
+        SingleActivator(LogicalKeyboardKey.escape): EscapeIntent(navigatorKey),
       },
-      actions: {QuitIntent: QuitAction()},
+      actions: {QuitIntent: QuitAction(), EscapeIntent: EscapeAction()},
     );
   }
 }
