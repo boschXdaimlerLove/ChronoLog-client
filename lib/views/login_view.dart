@@ -4,11 +4,13 @@ import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/api/api_calls.dart';
 import 'package:chrono_log/api/server_communication.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
+import 'package:chrono_log/control/tab_select_intent.dart';
 import 'package:chrono_log/main.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/views/top_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     show MacOSFlutterLocalNotificationsPlugin;
 import 'package:string_translate/string_translate.dart' show Translate;
@@ -49,95 +51,98 @@ final class _LoginViewState extends State<LoginView> {
 
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            _topBar,
-            Spacer(flex: 1),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Login'.tr(),
+      body: Shortcuts(
+        shortcuts: {SingleActivator(LogicalKeyboardKey.tab): TabSelectIntent()},
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              _topBar,
+              Spacer(flex: 1),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Login'.tr(),
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+              ),
+              Text(
+                'Log into your BBQ work account'.tr(),
                 style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w300,
+                  fontSize: 16,
                 ),
               ),
-            ),
-            Text(
-              'Log into your BBQ work account'.tr(),
-              style: TextStyle(
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.w300,
-                fontSize: 16,
-              ),
-            ),
-            Spacer(flex: 1),
-            Icon(Icons.person, size: 64),
-            Spacer(flex: 1),
-            SizedBox(
-              width: size.width / 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 64.0,
-                  vertical: 16,
-                ),
-                child: TextField(
-                  focusNode: _usernameNode,
-                  onChanged:
-                      (username) => setState(() => this.username = username),
-                  enableIMEPersonalizedLearning: false,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    labelText: 'Username'.tr(),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    floatingLabelAlignment: FloatingLabelAlignment.start,
+              Spacer(flex: 1),
+              Icon(Icons.person, size: 64),
+              Spacer(flex: 1),
+              SizedBox(
+                width: size.width / 2,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 64.0,
+                    vertical: 16,
+                  ),
+                  child: TextField(
+                    focusNode: _usernameNode,
+                    onChanged:
+                        (username) => setState(() => this.username = username),
+                    enableIMEPersonalizedLearning: false,
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: 'Username'.tr(),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      floatingLabelAlignment: FloatingLabelAlignment.start,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: size.width / 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 64.0,
-                  vertical: 16,
-                ),
-                child: TextField(
-                  onChanged:
-                      (password) => setState(() => this.password = password),
-                  keyboardType: TextInputType.text,
-                  obscureText: true,
-                  obscuringCharacter: '*',
-                  enabled: true,
-                  enableIMEPersonalizedLearning: false,
-                  enableInteractiveSelection: true,
-                  enableSuggestions: false,
-                  decoration: InputDecoration(
-                    labelText: 'Password'.tr(),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    floatingLabelAlignment: FloatingLabelAlignment.start,
+              SizedBox(
+                width: size.width / 2,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 64.0,
+                    vertical: 16,
+                  ),
+                  child: TextField(
+                    onChanged:
+                        (password) => setState(() => this.password = password),
+                    keyboardType: TextInputType.text,
+                    obscureText: true,
+                    obscuringCharacter: '*',
+                    enabled: true,
+                    enableIMEPersonalizedLearning: false,
+                    enableInteractiveSelection: true,
+                    enableSuggestions: false,
+                    decoration: InputDecoration(
+                      labelText: 'Password'.tr(),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      floatingLabelAlignment: FloatingLabelAlignment.start,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Spacer(flex: 2),
-            TextButton(
-              onPressed: _loginEnabled ? () => _login() : null,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24.0,
-                  vertical: 12,
+              Spacer(flex: 2),
+              TextButton(
+                onPressed: _loginEnabled ? () => _login() : null,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 12,
+                  ),
+                  child: Text('Log in'.tr()),
                 ),
-                child: Text('Log in'.tr()),
               ),
-            ),
-            Spacer(flex: 1),
-          ],
+              Spacer(flex: 1),
+            ],
+          ),
         ),
       ),
     );

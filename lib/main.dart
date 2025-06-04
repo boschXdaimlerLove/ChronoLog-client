@@ -5,6 +5,7 @@ import 'package:chrono_log/blocs/event_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/control/escape_intent.dart';
 import 'package:chrono_log/control/quit_intent.dart';
+import 'package:chrono_log/control/tab_select_intent.dart';
 import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/login_event.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
@@ -162,7 +163,11 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
         SingleActivator(LogicalKeyboardKey.keyQ, meta: true): QuitIntent(),
         SingleActivator(LogicalKeyboardKey.escape): EscapeIntent(navigatorKey),
       },
-      actions: {QuitIntent: QuitAction(), EscapeIntent: EscapeAction()},
+      actions: {
+        QuitIntent: QuitAction(),
+        EscapeIntent: EscapeAction(),
+        TabSelectIntent: TabSelectAction(),
+      },
     );
   }
 }

@@ -9,7 +9,7 @@ import 'package:chrono_log/models/events/login_event.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
 import 'package:chrono_log/models/events/notification_triggered_event.dart';
 import 'package:chrono_log/models/notification.dart';
-import 'package:chrono_log/views/settings_screen.dart';
+import 'package:chrono_log/views/dialogs/settings_screen.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:string_translate/string_translate.dart'

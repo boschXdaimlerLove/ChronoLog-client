@@ -2,7 +2,7 @@ import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/event_bloc.dart';
 import 'package:chrono_log/blocs/settings_bloc.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
-import 'package:chrono_log/views/settings_screen.dart'
+import 'package:chrono_log/views/dialogs/settings_screen.dart'
     show PasswordSettingsScreen;
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart'

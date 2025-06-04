@@ -2,6 +2,7 @@ import 'package:bloc_implementation/bloc_implementation.dart';
 import 'package:chrono_log/blocs/calendar_day_bloc.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:chrono_log/storage/storage.dart';
+import 'package:chrono_log/views/dialogs/add_times_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:string_translate/string_translate.dart' show Translate;
@@ -32,92 +33,136 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
   }
 
   Widget get _workTimeList {
+    final List<Widget> children = [];
     if (_frames!.isEmpty) {
-      return Center(child: Text('No work data available'.tr()));
+      children.add(
+        Expanded(
+          flex: 10,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Center(child: Text('No work data available'.tr())),
+          ),
+        ),
+      );
     } else {
-      return ListView.builder(
-        itemCount: _frames!.length,
-        itemBuilder: (_, counter) {
-          final TimeFrame frame = _frames![counter];
-          return Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              spacing: 8,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      children.add(
+        Expanded(
+          flex: 5,
+          child: ListView.builder(
+            itemCount: _frames!.length,
+            itemBuilder: (_, counter) {
+              final TimeFrame frame = _frames![counter];
+              return Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
                   mainAxisSize: MainAxisSize.max,
-                  spacing: 200,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 8,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 12,
+                      mainAxisSize: MainAxisSize.max,
+                      spacing: 200,
                       children: [
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade400,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              'Start: ${DateFormat('hh:mm').format(frame.start)}',
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 12,
+                          children: [
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  'Start: ${DateFormat('hh:mm').format(frame.start)}',
+                                ),
+                              ),
                             ),
-                          ),
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  'End:   ${frame.end != null ? DateFormat('hh:mm').format(frame.end!) : 'Unfinished'.tr()}',
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade400,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              'End:   ${frame.end != null ? DateFormat('hh:mm').format(frame.end!) : 'Unfinished'.tr()}',
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 12,
+                          children: [
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  'Working time: ${frame.getWorkingTimeRepresentation()}',
+                                ),
+                              ),
                             ),
-                          ),
+                            _getWorkingTimeHint(frame),
+                          ],
                         ),
                       ],
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 12,
-                      children: [
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade400,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              'Working time: ${frame.getWorkingTimeRepresentation()}',
-                            ),
-                          ),
-                        ),
-                        _getWorkingTimeHint(frame),
-                      ],
-                    ),
+                    Divider(),
                   ],
                 ),
-                Divider(),
-              ],
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ),
       );
     }
+    children.add(
+      Expanded(
+        flex: 1,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return Dialog(child: AddTimesScreen());
+                  },
+                );
+              },
+              child: Text('Add times'.tr()),
+            ),
+          ],
+        ),
+      ),
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: children,
+    );
   }
 
   DecoratedBox _getWorkingTimeHint(final TimeFrame frame) {
