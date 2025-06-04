@@ -126,6 +126,7 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //restorationScopeId: 'ChronoLog',
       navigatorKey: navigatorKey,
       // Locales
       localizationsDelegates: TranslationDelegates.localizationDelegates,

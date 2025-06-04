@@ -83,7 +83,8 @@ final class _LoginViewState extends State<LoginView> {
                   vertical: 16,
                 ),
                 child: TextField(
-                  onChanged: (username) => this.username = username,
+                  onChanged:
+                      (username) => setState(() => this.username = username),
                   enableIMEPersonalizedLearning: false,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
@@ -102,7 +103,8 @@ final class _LoginViewState extends State<LoginView> {
                   vertical: 16,
                 ),
                 child: TextField(
-                  onChanged: (password) => this.password = password,
+                  onChanged:
+                      (password) => setState(() => this.password = password),
                   keyboardType: TextInputType.text,
                   obscureText: true,
                   obscuringCharacter: '*',
@@ -120,7 +122,7 @@ final class _LoginViewState extends State<LoginView> {
             ),
             Spacer(flex: 2),
             TextButton(
-              onPressed: () => _login(),
+              onPressed: _loginEnabled ? () => _login() : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24.0,
@@ -134,6 +136,10 @@ final class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  bool get _loginEnabled {
+    return username.isNotEmpty && password.isNotEmpty;
   }
 
   Widget get _topBar {

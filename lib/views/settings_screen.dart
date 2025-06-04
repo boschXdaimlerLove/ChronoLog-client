@@ -1,37 +1,7 @@
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/settings_bloc.dart';
-import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
 import 'package:string_translate/string_translate.dart' show Translate;
-
-final class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          title: Text('Change password'.tr()),
-          subtitle: Text('Change your login password'.tr()),
-          leading: Icon(Icons.password),
-          onTap: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => Dialog(child: PasswordSettingsScreen()),
-              ),
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Change language'.tr()),
-          subtitle: Text('Change the display language of the app'.tr()),
-          leading: Icon(CupertinoIcons.globe),
-        ),
-      ],
-    );
-  }
-}
 
 final class PasswordSettingsScreen extends StatefulWidget {
   const PasswordSettingsScreen({super.key});
