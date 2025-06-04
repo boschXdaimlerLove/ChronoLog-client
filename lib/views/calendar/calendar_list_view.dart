@@ -28,7 +28,7 @@ final class _CalendarListViewState extends State<CalendarListView> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          height: 70,
+          height: 100,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -44,12 +44,26 @@ final class _CalendarListViewState extends State<CalendarListView> {
                   },
                   icon: const Icon(Icons.arrow_back_ios),
                 ),
-                Text(
-                  DateFormat('MMMM yyyy')
-                      .format(DateTime(_bloc!.currentYear, _bloc!.currentMonth))
-                      .toString()
-                      .tr(),
-                  style: TextStyle(fontSize: 24),
+                Column(
+                  children: [
+                    Text(
+                      DateFormat('MMMM yyyy')
+                          .format(
+                            DateTime(_bloc!.currentYear, _bloc!.currentMonth),
+                          )
+                          .toString()
+                          .tr(),
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _bloc!.jumpToToday();
+                        });
+                      },
+                      child: Text('Today'.tr()),
+                    ),
+                  ],
                 ),
                 IconButton(
                   onPressed: () {

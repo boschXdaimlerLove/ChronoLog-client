@@ -37,6 +37,10 @@ final class _LoginViewState extends State<LoginView> {
 
   HomeBloc? _bloc;
 
+  FocusManager _focusManager = FocusManager();
+
+  FocusNode _usernameNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     /* LOCAL NOTIFICATIONS PLUGIN */
@@ -83,6 +87,7 @@ final class _LoginViewState extends State<LoginView> {
                   vertical: 16,
                 ),
                 child: TextField(
+                  focusNode: _usernameNode,
                   onChanged:
                       (username) => setState(() => this.username = username),
                   enableIMEPersonalizedLearning: false,

@@ -27,6 +27,11 @@ final class CalendarListBloc extends Bloc {
     }
   }
 
+  void jumpToToday() {
+    _currentMonth = DateTime.now().month;
+    _currentYear = DateTime.now().year;
+  }
+
   int get previousMonth {
     return _currentMonth == 1 ? 12 : _currentMonth - 1;
   }
