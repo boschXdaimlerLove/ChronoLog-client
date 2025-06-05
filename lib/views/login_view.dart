@@ -39,6 +39,10 @@ final class _LoginViewState extends State<LoginView> {
 
   HomeBloc? _bloc;
 
+  final FocusNode _usernameFocusNode = FocusNode();
+
+  final FocusNode _passwordFocusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     /* LOCAL NOTIFICATIONS PLUGIN */
@@ -87,8 +91,17 @@ final class _LoginViewState extends State<LoginView> {
                     vertical: 16,
                   ),
                   child: TextField(
+                    focusNode: _usernameFocusNode,
                     onChanged:
                         (username) => setState(() => this.username = username),
+                    onSubmitted: (username) {
+                      if (_loginEnabled) {
+                        this.username = username;
+                        _login();
+                      } else {
+                        _passwordFocusNode.requestFocus();
+                      }
+                    },
                     enableIMEPersonalizedLearning: false,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
@@ -107,8 +120,17 @@ final class _LoginViewState extends State<LoginView> {
                     vertical: 16,
                   ),
                   child: TextField(
+                    focusNode: _passwordFocusNode,
                     onChanged:
                         (password) => setState(() => this.password = password),
+                    onSubmitted: (password) {
+                      if (_loginEnabled) {
+                        this.password = password;
+                        _login();
+                      } else {
+                        _usernameFocusNode.requestFocus();
+                      }
+                    },
                     keyboardType: TextInputType.text,
                     obscureText: true,
                     obscuringCharacter: '*',

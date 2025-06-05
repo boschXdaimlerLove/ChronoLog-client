@@ -72,8 +72,9 @@ final class HomeBloc extends Bloc {
       _stampedIn = false;
       DateTime endTime = await ServerCommunication.endWork(username, password);
       TimeFrame unfinishedFrame = Storage.getLastUnfinishedTimeFrame();
-      unfinishedFrame.end = endTime;
-      Storage.updateUnfinishedTimeFrame(unfinishedFrame);
+      TimeFrame copy = TimeFrame.unfinished(unfinishedFrame.start);
+      copy.end = endTime;
+      await Storage.updateUnfinishedTimeFrame(copy);
     } else {
       _stampedIn = true;
       DateTime unfinishedStartTime = await ServerCommunication.startWork(

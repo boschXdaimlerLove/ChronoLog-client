@@ -14,10 +14,12 @@ final class TimeFrame {
   DateTime? end;
 
   TimeFrame(this.start, this.end) {
-    if (start.year != end!.year ||
-        start.month != end!.month ||
-        start.day != end!.day) {
-      throw CrossDayTimeFrameError();
+    if (end != null) {
+      if (start.year != end!.year ||
+          start.month != end!.month ||
+          start.day != end!.day) {
+        throw CrossDayTimeFrameError();
+      }
     }
   }
 
@@ -62,5 +64,17 @@ final class TimeFrame {
     end: $end,
     duration: ${getWorkingTimeRepresentation()}
     ''';
+  }
+
+  @override
+  int get hashCode => start.hashCode + (end != null ? end!.hashCode : 0);
+
+  @override
+  bool operator ==(Object other) {
+    if (other is TimeFrame) {
+      return start == other.start && end == other.end;
+    } else {
+      return false;
+    }
   }
 }

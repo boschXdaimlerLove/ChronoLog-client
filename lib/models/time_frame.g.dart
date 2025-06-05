@@ -16,7 +16,7 @@ class TimeFrameAdapter extends TypeAdapter<TimeFrame> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TimeFrame(fields[0] as DateTime, fields[1] as DateTime);
+    return TimeFrame(fields[0] as DateTime, fields[1] as DateTime?);
   }
 
   @override

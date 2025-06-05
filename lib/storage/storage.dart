@@ -29,7 +29,6 @@ final class Storage {
     Hive.registerAdapter(NotificationAdapter());
     _frameBox = await Hive.openBox<TimeFrame>(_frameBoxKey);
     _notificationBox = await Hive.openBox<Notification>(_notificationBoxKey);
-    await _frameBox!.clear();
     _loadTimes();
     _loadNotifications();
   }
@@ -39,6 +38,8 @@ final class Storage {
       _frameList.add(frame);
     }
   }
+
+  static void finalize() {}
 
   static void _loadNotifications() {
     _notificationList.add(
@@ -77,11 +78,10 @@ final class Storage {
   static Future<void> storeNewTime(TimeFrame time) async {
     if (!_frameList.contains(time)) {
       _frameList.add(time);
-      await _frameBox!.clear();
-      for (int i = 0; i < _frameList.length; i++) {
-        final String key = 'TimeFrame $i';
-        await _frameBox!.put(key, _frameList[i]);
-      }
+    }
+    if (!_frameBox!.containsKey('TimeFrame ${time.hashCode}')) {
+      _frameBox!.put('TimeFrame ${time.hashCode}', time);
+      _frameBox!.flush();
     }
   }
 
@@ -93,12 +93,11 @@ final class Storage {
     return _frameList.where((frame) => frame.end == null).first;
   }
 
-  static void updateUnfinishedTimeFrame(TimeFrame newFrame) {
+  static Future<void> updateUnfinishedTimeFrame(TimeFrame newFrame) async {
     TimeFrame unfinished = getLastUnfinishedTimeFrame();
-    int index = _frameList.indexOf(unfinished);
     _frameList.remove(unfinished);
-    _frameBox!.delete('TimeFrame $index');
-    storeNewTime(newFrame);
+    _frameBox!.delete('TimeFrame ${unfinished.hashCode}');
+    await storeNewTime(newFrame);
   }
 
   static bool _frameInDay(final TimeFrame frame, final DateTime date) {

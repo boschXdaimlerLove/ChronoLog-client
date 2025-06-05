@@ -242,6 +242,10 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.german:
         'Du bist nicht eingelogged, bitte log dich ein, bevor du die Arbeit startest',
   },
+  'Today': {
+    TranslationLocales.english: 'Today',
+    TranslationLocales.german: 'Heute',
+  },
 };
 
 HashMap<String, Map<Locale, String>> get translations {

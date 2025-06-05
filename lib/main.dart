@@ -101,11 +101,11 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
         _bloc!.stamp();
       }
       setState(() {
-        _child = BlocParent(bloc: _bloc!, child: LoginView(key: _loginKey));
+        _setLoginScreen();
       });
     } else if (event is LoginEvent) {
       setState(() {
-        _child = BlocParent(bloc: _bloc!, child: Homescreen(key: _homeKey));
+        _setHomeScreen();
       });
     }
   }
@@ -155,15 +155,9 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
               _loginKey = UniqueKey();
               _homeKey = UniqueKey();
               if (_bloc!.loggedIn) {
-                _child = BlocParent(
-                  bloc: _bloc!,
-                  child: Homescreen(key: _homeKey),
-                );
+                _setHomeScreen();
               } else {
-                _child = BlocParent(
-                  bloc: _bloc!,
-                  child: LoginView(key: _loginKey),
-                );
+                _setLoginScreen();
               }
             }),
         navigatorKey: navigatorKey,
@@ -179,5 +173,13 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
         TabSelectIntent: TabSelectAction(),
       },
     );
+  }
+
+  void _setHomeScreen() {
+    _child = BlocParent(bloc: _bloc!, child: Homescreen(key: _homeKey));
+  }
+
+  void _setLoginScreen() {
+    _child = BlocParent(bloc: _bloc!, child: LoginView(key: _loginKey));
   }
 }

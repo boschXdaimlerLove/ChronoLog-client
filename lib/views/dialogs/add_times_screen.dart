@@ -12,9 +12,24 @@ class AddTimesScreen extends StatefulWidget {
 }
 
 class _AddTimesScreenState extends State<AddTimesScreen> {
-  int _itemCount = 1;
+  int _itemCount = 0;
 
   final List<TimeFrame> _frames = [];
+
+  @override
+  void initState() {
+    _increaseFrameCount();
+    super.initState();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (_frames.length != _itemCount) {
+      int diff = _itemCount - _frames.length;
+      // TODO: implement difference builder with for loop
+    }
+    super.setState(fn);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +46,25 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
               flex: 8,
               child: ListView.builder(
                 itemCount: _itemCount,
-                itemBuilder: (_, __) {
-                  return _AddTimeFrameContainer();
+                itemBuilder: (_, counter) {
+                  TimeFrame frame = _frames[counter];
+                  return _AddTimeFrameContainer(
+                    frame: frame,
+                    removeCallback: () {
+                      print(frame);
+                      _frames.remove(frame);
+                      setState(() {
+                        _itemCount--;
+                      });
+                    },
+                  );
                 },
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                setState(() => _itemCount++);
-              },
-              child: Expanded(
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: GestureDetector(
+                onTap: _increaseFrameCount,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -48,11 +72,35 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
                 ),
               ),
             ),
-            TextButton(onPressed: _sendTimes, child: Text('Submit'.tr())),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Cancel'.tr()),
+                ),
+                TextButton(onPressed: _sendTimes, child: Text('Submit'.tr())),
+              ],
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _increaseFrameCount() {
+    setState(() {
+      _itemCount++;
+      DateTime now = DateTime.now();
+      _frames.add(
+        TimeFrame(
+          DateTime(now.year, now.month, now.day - 1, 7),
+          DateTime(now.year, now.month, now.day - 1, 15),
+        ),
+      );
+    });
   }
 
   void _sendTimes() {
@@ -61,7 +109,14 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
 }
 
 final class _AddTimeFrameContainer extends StatefulWidget {
-  const _AddTimeFrameContainer();
+  const _AddTimeFrameContainer({
+    required this.frame,
+    required this.removeCallback,
+  });
+
+  final TimeFrame frame;
+
+  final Function() removeCallback;
 
   @override
   State<_AddTimeFrameContainer> createState() => _AddTimeFrameContainerState();
@@ -74,130 +129,206 @@ final class _AddTimeFrameContainerState extends State<_AddTimeFrameContainer> {
 
   final TextEditingController _endController = TextEditingController();
 
-  TimeOfDay? _startTime;
+  TimeOfDay _startTime = TimeOfDay(hour: 7, minute: 0);
 
-  TimeOfDay? _endTime;
+  TimeOfDay _endTime = TimeOfDay(hour: 15, minute: 0);
 
-  TimeFrame _frame = TimeFrame(DateTime.now(), DateTime.now());
+  DateTime _date = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day - 1,
+  );
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            flex: 1,
-            child: TextField(
-              controller: _dateController,
-              readOnly: true,
-              decoration: InputDecoration(
-                constraints: BoxConstraints(maxWidth: 100),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                hintText:
-                    _dateController.text.isNotEmpty
-                        ? _dateController.text
-                        : 'Choose date'.tr(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: 150,
+          maxWidth: size.width,
+          minHeight: 100,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                shape: BoxShape.rectangle,
+                border: BoxBorder.all(color: Colors.teal),
               ),
-              onTap: () async {
-                final DateTime? picked = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now().subtract(Duration(days: 1)),
-                  lastDate: DateTime.now(),
-                  cancelText: 'Cancel'.tr(),
-                  confirmText: 'Ok'.tr(),
-                  currentDate: DateTime.now(),
-                  initialEntryMode: DatePickerEntryMode.calendar,
-                  initialDatePickerMode: DatePickerMode.day,
-                );
-                if (picked != null) {
-                  setState(() {
-                    _dateController.text = DateFormat(
-                      'yyyy-MM-dd',
-                    ).format(picked);
-                  });
-                }
-                // TODO: respect already entered times
-                _frame = TimeFrame(picked!, picked);
-              },
-            ),
-          ),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 100),
-            child: Row(
-              children: [
-                TextField(
-                  onTap: () async {
-                    final TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                      confirmText: 'Ok'.tr(),
-                      cancelText: 'Cancel'.tr(),
-                      helpText: 'Select time'.tr(), // Optional
-                    );
-
-                    if (pickedTime != null) {
-                      final now = DateTime.now();
-                      final timeAsDateTime = DateTime(
-                        now.year,
-                        now.month,
-                        now.day,
-                        pickedTime.hour,
-                        pickedTime.minute,
-                      );
-
-                      setState(() {
-                        _startController.text = DateFormat(
-                          'HH:mm',
-                        ).format(timeAsDateTime);
-                      });
-                    }
-                    _startTime = pickedTime;
-                    // TODO: update frame
-                  },
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TextField(
+                        controller: _dateController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          constraints: BoxConstraints(
+                            maxWidth: 488,
+                            maxHeight: 75,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          hintText:
+                              _dateController.text.isNotEmpty
+                                  ? _dateController.text
+                                  : 'Choose date'.tr(),
+                        ),
+                        onTap: () async {
+                          final DateTime now = DateTime.now();
+                          final DateTime? picked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(
+                              now.year,
+                              now.month - 1,
+                              now.day - 1,
+                            ),
+                            lastDate: DateTime.now(),
+                            cancelText: 'Cancel'.tr(),
+                            confirmText: 'Ok'.tr(),
+                            currentDate: DateTime.now(),
+                            initialEntryMode: DatePickerEntryMode.calendar,
+                            initialDatePickerMode: DatePickerMode.day,
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              _dateController.text = DateFormat(
+                                'yyyy-MM-dd',
+                              ).format(picked);
+                              _date = picked;
+                              widget.frame.start = DateTime(
+                                widget.frame.start.year,
+                                picked.month,
+                                picked.day,
+                                _startTime.hour,
+                                _startTime.minute,
+                              );
+                              widget.frame.end = DateTime(
+                                widget.frame.start.year,
+                                picked.month,
+                                picked.day,
+                                _endTime.hour,
+                                _endTime.minute,
+                              );
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 488, maxHeight: 75),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Spacer(),
+                          TextField(
+                            controller: _startController,
+                            decoration: InputDecoration(
+                              constraints: BoxConstraints(
+                                maxWidth: 200,
+                                maxHeight: 75,
+                              ),
+                              hintText: 'Start time'.tr(),
+                            ),
+                            onTap: () async {
+                              final TimeOfDay? pickedTime =
+                                  await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now(),
+                                    confirmText: 'Ok'.tr(),
+                                    cancelText: 'Cancel'.tr(),
+                                    helpText: 'Select time'.tr(),
+                                    initialEntryMode: TimePickerEntryMode.input,
+                                    orientation: Orientation.landscape,
+                                  );
+                              if (pickedTime != null) {
+                                final timeAsDateTime = DateTime(
+                                  _date.year,
+                                  _date.month,
+                                  _date.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                );
+                                setState(() {
+                                  _startController.text = DateFormat(
+                                    'HH:mm',
+                                  ).format(timeAsDateTime);
+                                });
+                                _startTime = pickedTime;
+                                widget.frame.start = timeAsDateTime;
+                              }
+                            },
+                          ),
+                          Spacer(),
+                          TextField(
+                            controller: _endController,
+                            decoration: InputDecoration(
+                              constraints: BoxConstraints(
+                                maxWidth: 200,
+                                maxHeight: 75,
+                              ),
+                              hintText: 'End time'.tr(),
+                            ),
+                            onTap: () async {
+                              final TimeOfDay? pickedTime =
+                                  await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now(),
+                                    confirmText: 'Ok'.tr(),
+                                    cancelText: 'Cancel'.tr(),
+                                    helpText: 'Select time'.tr(),
+                                    initialEntryMode: TimePickerEntryMode.input,
+                                    orientation: Orientation.landscape,
+                                  );
+                              if (pickedTime != null) {
+                                final timeAsDateTime = DateTime(
+                                  _date.year,
+                                  _date.month,
+                                  _date.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                );
+                                setState(() {
+                                  _endController.text = DateFormat(
+                                    'HH:mm',
+                                  ).format(timeAsDateTime);
+                                  _endTime = pickedTime;
+                                  widget.frame.end = timeAsDateTime;
+                                });
+                              }
+                            },
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                TextField(
-                  onTap: () async {
-                    final TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                      confirmText: 'Ok'.tr(),
-                      cancelText: 'Cancel'.tr(),
-                      helpText: 'Select time'.tr(), // Optional
-                    );
-
-                    if (pickedTime != null) {
-                      final now = DateTime.now();
-                      final timeAsDateTime = DateTime(
-                        now.year,
-                        now.month,
-                        now.day,
-                        pickedTime.hour,
-                        pickedTime.minute,
-                      );
-
-                      setState(() {
-                        _endController.text = DateFormat(
-                          'HH:mm',
-                        ).format(timeAsDateTime);
-                      });
-                    }
-                    _endTime = pickedTime;
-                    // TODO: update frame
-                  },
-                ),
-              ],
+              ),
             ),
-          ),
-          Divider(),
-        ],
+            IconButton(
+              onPressed: widget.removeCallback,
+              icon: Icon(Icons.remove_circle_outline),
+            ),
+          ],
+        ),
       ),
     );
   }
