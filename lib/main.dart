@@ -5,7 +5,6 @@ import 'package:chrono_log/blocs/event_bloc.dart';
 import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/control/escape_intent.dart';
 import 'package:chrono_log/control/quit_intent.dart';
-import 'package:chrono_log/control/tab_select_intent.dart';
 import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/login_event.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
@@ -22,6 +21,8 @@ import 'package:hive_ce_flutter/adapters.dart';
 import 'package:modern_themes/modern_themes.dart' show Themes;
 import 'package:string_translate/string_translate.dart'
     hide StandardTranslations;
+
+import 'control/tab_select_intent.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -90,17 +91,21 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
 
   HomeBloc? _bloc;
 
+  Key _loginKey = UniqueKey();
+
+  Key _homeKey = UniqueKey();
+
   void _handleEvents(Event event) {
     if (event is LogoutEvent) {
       if (_bloc!.stampedIn) {
         _bloc!.stamp();
       }
       setState(() {
-        _child = BlocParent(bloc: _bloc!, child: LoginView());
+        _child = BlocParent(bloc: _bloc!, child: LoginView(key: _loginKey));
       });
     } else if (event is LoginEvent) {
       setState(() {
-        _child = BlocParent(bloc: _bloc!, child: Homescreen());
+        _child = BlocParent(bloc: _bloc!, child: Homescreen(key: _homeKey));
       });
     }
   }
@@ -127,35 +132,40 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      //restorationScopeId: 'ChronoLog',
       navigatorKey: navigatorKey,
-      // Locales
       localizationsDelegates: TranslationDelegates.localizationDelegates,
       locale: Translation.activeLocale,
       supportedLocales: Translation.supportedLocales,
-
-      // Debug
       debugShowMaterialGrid: false,
       showSemanticsDebugger: false,
       showPerformanceOverlay: false,
       checkerboardRasterCacheImages: false,
       checkerboardOffscreenLayers: false,
       debugShowCheckedModeBanner: true,
-
-      // Themes
       themeMode: Themes.themeMode,
       theme: Themes.lightTheme,
       darkTheme: Themes.darkTheme,
       highContrastTheme: Themes.highContrastLightTheme,
       highContrastDarkTheme: Themes.highContrastDarkTheme,
-
-      // General
       scrollBehavior: const MaterialScrollBehavior(),
       title: 'BBQ Worktime Management',
-
-      // Screens
       home: MacosMenuWrapper(
-        reloadCallback: () => setState(() {}),
+        reloadCallback:
+            () => setState(() {
+              _loginKey = UniqueKey();
+              _homeKey = UniqueKey();
+              if (_bloc!.loggedIn) {
+                _child = BlocParent(
+                  bloc: _bloc!,
+                  child: Homescreen(key: _homeKey),
+                );
+              } else {
+                _child = BlocParent(
+                  bloc: _bloc!,
+                  child: LoginView(key: _loginKey),
+                );
+              }
+            }),
         navigatorKey: navigatorKey,
         child: _child!,
       ),

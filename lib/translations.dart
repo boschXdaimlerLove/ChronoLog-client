@@ -140,6 +140,10 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: 'change password',
     TranslationLocales.german: 'Passwort ändern',
   },
+  'Change password': {
+    TranslationLocales.english: 'Change password',
+    TranslationLocales.german: 'Passwort ändern',
+  },
   'submit': {
     TranslationLocales.english: 'submit',
     TranslationLocales.german: 'speichern',

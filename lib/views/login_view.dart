@@ -39,10 +39,6 @@ final class _LoginViewState extends State<LoginView> {
 
   HomeBloc? _bloc;
 
-  FocusManager _focusManager = FocusManager();
-
-  FocusNode _usernameNode = FocusNode();
-
   @override
   Widget build(BuildContext context) {
     /* LOCAL NOTIFICATIONS PLUGIN */
@@ -91,7 +87,6 @@ final class _LoginViewState extends State<LoginView> {
                     vertical: 16,
                   ),
                   child: TextField(
-                    focusNode: _usernameNode,
                     onChanged:
                         (username) => setState(() => this.username = username),
                     enableIMEPersonalizedLearning: false,
@@ -178,15 +173,6 @@ final class _LoginViewState extends State<LoginView> {
     }
     if (correct) {
       _bloc!.login(username, password);
-      if (mounted) {
-        /*
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => BlocParent(bloc: _bloc!, child: Homescreen()),
-          ),
-        );
-        */
-      }
     } else {
       if (mounted) {
         showDialog(

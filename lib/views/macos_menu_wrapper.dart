@@ -2,18 +2,19 @@ import 'dart:async' show StreamSubscription;
 
 import 'package:bloc_implementation/bloc_implementation.dart' show BlocParent;
 import 'package:chrono_log/blocs/event_bloc.dart';
-import 'package:chrono_log/blocs/settings_bloc.dart';
 import 'package:chrono_log/main.dart';
 import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/login_event.dart';
 import 'package:chrono_log/models/events/logout_event.dart';
 import 'package:chrono_log/models/events/notification_triggered_event.dart';
 import 'package:chrono_log/models/notification.dart';
-import 'package:chrono_log/views/dialogs/settings_screen.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:string_translate/string_translate.dart'
     show Translate, Translation, TranslationLocales;
+
+import '../blocs/settings_bloc.dart';
+import 'dialogs/settings_screen.dart';
 
 final class MacosMenuWrapper extends StatefulWidget {
   const MacosMenuWrapper({
