@@ -81,7 +81,7 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(
-                                  'Start: ${DateFormat('hh:mm').format(frame.start)}',
+                                  '${'Start'.tr()}: ${DateFormat('hh:mm').format(frame.start)}',
                                 ),
                               ),
                             ),
@@ -94,7 +94,7 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(
-                                  'End:   ${frame.end != null ? DateFormat('hh:mm').format(frame.end!) : 'Unfinished'.tr()}',
+                                  '${'End: '.tr()} ${frame.end != null ? DateFormat('hh:mm').format(frame.end!) : 'Unfinished'}',
                                 ),
                               ),
                             ),
@@ -115,7 +115,7 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(
-                                  'Working time: ${frame.getWorkingTimeRepresentation()}',
+                                  '${'Working time'.tr()}: ${frame.getWorkingTimeRepresentation()}',
                                 ),
                               ),
                             ),

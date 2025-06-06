@@ -113,7 +113,9 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
   @override
   void initState() {
     _bloc = HomeBloc(() {
-      setState(() {});
+      setState(() {
+        _setHomeScreen();
+      });
     });
     _child = BlocParent(bloc: _bloc!, child: LoginView());
     EventBloc.eventStream.stream.listen((event) => _handleEvents(event));

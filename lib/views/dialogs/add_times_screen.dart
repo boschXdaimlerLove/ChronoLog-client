@@ -2,7 +2,7 @@ import 'package:chrono_log/api/server_communication.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:string_translate/string_translate.dart';
+import 'package:string_translate/string_translate.dart' show Translate;
 
 class AddTimesScreen extends StatefulWidget {
   const AddTimesScreen({super.key});
@@ -16,6 +16,8 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
 
   final List<TimeFrame> _frames = [];
 
+  final List<bool> _edited = [];
+
   @override
   void initState() {
     _increaseFrameCount();
@@ -26,7 +28,14 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
   void setState(VoidCallback fn) {
     if (_frames.length != _itemCount) {
       int diff = _itemCount - _frames.length;
-      // TODO: implement difference builder with for loop
+      for (int i = 0; i < diff; i++) {
+        // Item count is bigger, so add to list
+        _addTimeFrame();
+      }
+      for (int i = 0; i > diff; i--) {
+        // [_frames.length] is bigger, so remove from the list
+        _frames.removeLast();
+      }
     }
     super.setState(fn);
   }
@@ -51,12 +60,14 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
                   return _AddTimeFrameContainer(
                     frame: frame,
                     removeCallback: () {
-                      print(frame);
                       _frames.remove(frame);
+                      _edited.removeAt(counter);
                       setState(() {
                         _itemCount--;
                       });
                     },
+                    removable: counter != 0,
+                    editCallback: () => setState(() => _edited[counter] = true),
                   );
                 },
               ),
@@ -81,7 +92,10 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text('Cancel'.tr()),
                 ),
-                TextButton(onPressed: _sendTimes, child: Text('Submit'.tr())),
+                TextButton(
+                  onPressed: _edited.contains(true) ? _sendTimes : null,
+                  child: Text('Submit'.tr()),
+                ),
               ],
             ),
           ],
@@ -93,18 +107,30 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
   void _increaseFrameCount() {
     setState(() {
       _itemCount++;
-      DateTime now = DateTime.now();
-      _frames.add(
-        TimeFrame(
-          DateTime(now.year, now.month, now.day - 1, 7),
-          DateTime(now.year, now.month, now.day - 1, 15),
-        ),
-      );
+      _addTimeFrame();
     });
   }
 
+  void _addTimeFrame() {
+    DateTime now = DateTime.now();
+    _frames.add(
+      TimeFrame(
+        DateTime(now.year, now.month, now.day - 1, 7),
+        DateTime(now.year, now.month, now.day - 1, 15),
+      ),
+    );
+    _edited.add(false);
+  }
+
   void _sendTimes() {
-    ServerCommunication.sendTimes('username', 'password', _frames);
+    final List<TimeFrame> localTimes = [];
+    for (int i = 0; i < _edited.length; i++) {
+      if (_edited[i]) {
+        localTimes.add(_frames[i]);
+      }
+    }
+    ServerCommunication.sendTimes('username', 'password', localTimes);
+    Navigator.of(context).pop();
   }
 }
 
@@ -112,11 +138,17 @@ final class _AddTimeFrameContainer extends StatefulWidget {
   const _AddTimeFrameContainer({
     required this.frame,
     required this.removeCallback,
+    this.removable = true,
+    required this.editCallback,
   });
 
   final TimeFrame frame;
 
   final Function() removeCallback;
+
+  final bool removable;
+
+  final Function() editCallback;
 
   @override
   State<_AddTimeFrameContainer> createState() => _AddTimeFrameContainerState();
@@ -227,6 +259,7 @@ final class _AddTimeFrameContainerState extends State<_AddTimeFrameContainer> {
                               );
                             });
                           }
+                          widget.editCallback();
                         },
                       ),
                     ),
@@ -274,6 +307,7 @@ final class _AddTimeFrameContainerState extends State<_AddTimeFrameContainer> {
                                 _startTime = pickedTime;
                                 widget.frame.start = timeAsDateTime;
                               }
+                              widget.editCallback();
                             },
                           ),
                           Spacer(),
@@ -313,6 +347,7 @@ final class _AddTimeFrameContainerState extends State<_AddTimeFrameContainer> {
                                   widget.frame.end = timeAsDateTime;
                                 });
                               }
+                              widget.editCallback();
                             },
                           ),
                           Spacer(),
@@ -324,7 +359,7 @@ final class _AddTimeFrameContainerState extends State<_AddTimeFrameContainer> {
               ),
             ),
             IconButton(
-              onPressed: widget.removeCallback,
+              onPressed: widget.removable ? widget.removeCallback : null,
               icon: Icon(Icons.remove_circle_outline),
             ),
           ],

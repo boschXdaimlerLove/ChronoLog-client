@@ -148,6 +148,10 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: 'submit',
     TranslationLocales.german: 'speichern',
   },
+  'Submit': {
+    TranslationLocales.english: 'Submit',
+    TranslationLocales.german: 'Speichern',
+  },
   'current password': {
     TranslationLocales.english: 'current password',
     TranslationLocales.german: 'aktuelles Passwort',
@@ -203,6 +207,10 @@ Map<String, Map<Locale, String>> _translations = {
   },
 
   /* NOTIFICATIONS */
+  'No new messages': {
+    TranslationLocales.english: 'No new messages',
+    TranslationLocales.german: 'Keine neuen Nachrichten',
+  },
   'Working too long': {
     TranslationLocales.english: 'Working too long',
     TranslationLocales.german: 'Zu langes arbeiten',
@@ -245,6 +253,46 @@ Map<String, Map<Locale, String>> _translations = {
   'Today': {
     TranslationLocales.english: 'Today',
     TranslationLocales.german: 'Heute',
+  },
+  'Add times': {
+    TranslationLocales.english: 'Add times',
+    TranslationLocales.german: 'Zeiten hinzufügen',
+  },
+  'Working time': {
+    TranslationLocales.english: 'Working time',
+    TranslationLocales.german: 'Arbeitszeit',
+  },
+  'Start': {
+    TranslationLocales.english: 'Start',
+    TranslationLocales.german: 'Start',
+  },
+  'End: ': {
+    TranslationLocales.english: 'End: ',
+    TranslationLocales.german: 'Ende:',
+  },
+  'Unfinished': {
+    TranslationLocales.english: 'Unfinished',
+    TranslationLocales.german: 'Unbeendet',
+  },
+  'Add new time': {
+    TranslationLocales.english: 'Add new time',
+    TranslationLocales.german: 'Neue Zeit hinzufügen',
+  },
+  'Choose date': {
+    TranslationLocales.english: 'Choose date',
+    TranslationLocales.german: 'Datum wählen',
+  },
+  'Start time': {
+    TranslationLocales.english: 'Start time',
+    TranslationLocales.german: 'Startzeit',
+  },
+  'End time': {
+    TranslationLocales.english: 'End time',
+    TranslationLocales.german: 'Endzeit',
+  },
+  'Select time': {
+    TranslationLocales.english: 'Select time',
+    TranslationLocales.german: 'Zeit wählen',
   },
 };
 

@@ -39,22 +39,7 @@ final class Storage {
     }
   }
 
-  static void finalize() {}
-
   static void _loadNotifications() {
-    _notificationList.add(
-      Notification(
-        'Test notification',
-        'This is a long test notification to test notifications LOL',
-        read: true,
-      ),
-    );
-    _notificationList.add(
-      Notification(
-        'Test notification',
-        'This is a long test notification to test notifications LOL',
-      ),
-    );
     for (Notification not in _notificationBox!.values) {
       _notificationList.add(not);
     }
