@@ -147,7 +147,9 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                 showDialog(
                   context: context,
                   builder: (_) {
-                    return Dialog(child: AddTimesScreen());
+                    return Dialog(
+                      child: BlocParent(bloc: _bloc!, child: AddTimesScreen()),
+                    );
                   },
                 );
               },

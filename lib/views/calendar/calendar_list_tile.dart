@@ -1,5 +1,6 @@
 import 'package:bloc_implementation/bloc_implementation.dart';
 import 'package:chrono_log/blocs/calendar_day_bloc.dart';
+import 'package:chrono_log/blocs/home_bloc.dart';
 import 'package:chrono_log/storage/storage.dart';
 import 'package:chrono_log/views/calendar/calendar_day_view.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,11 @@ final class CalendarListTile extends StatefulWidget {
 class _CalendarListTileState extends State<CalendarListTile> {
   bool _hasDates = false;
 
+  HomeBloc? _bloc;
+
   @override
   Widget build(BuildContext context) {
+    _bloc ??= BlocParent.of(context);
     _hasDates = Storage.getFramesForDay(widget.date).isNotEmpty;
     return ElevatedButton(
       style: ButtonStyle(
@@ -45,7 +49,11 @@ class _CalendarListTileState extends State<CalendarListTile> {
           builder: (_) {
             return Dialog(
               child: BlocParent(
-                bloc: CalendarDayBloc(widget.date),
+                bloc: CalendarDayBloc(
+                  widget.date,
+                  username: _bloc!.username,
+                  password: _bloc!.password,
+                ),
                 child: CalendarDayView(),
               ),
             );

@@ -1,4 +1,6 @@
+import 'package:bloc_implementation/bloc_implementation.dart';
 import 'package:chrono_log/api/server_communication.dart';
+import 'package:chrono_log/blocs/calendar_day_bloc.dart';
 import 'package:chrono_log/models/time_frame.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -17,6 +19,8 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
   final List<TimeFrame> _frames = [];
 
   final List<bool> _edited = [];
+
+  CalendarDayBloc? _bloc;
 
   @override
   void initState() {
@@ -42,6 +46,7 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _bloc ??= BlocParent.of(context);
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 400, maxWidth: 600),
       child: Padding(
@@ -129,7 +134,7 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
         localTimes.add(_frames[i]);
       }
     }
-    ServerCommunication.sendTimes('username', 'password', localTimes);
+    ServerCommunication.sendTimes(_bloc!.username, _bloc!.password, localTimes);
     Navigator.of(context).pop();
   }
 }
