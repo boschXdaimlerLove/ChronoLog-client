@@ -18,6 +18,8 @@ final class Homescreen extends StatefulWidget {
 final class _HomescreenState extends State<Homescreen> {
   HomeBloc? _bloc;
 
+  bool _stampedIn = false;
+
   @override
   Widget build(BuildContext context) {
     _bloc ??= BlocParent.of(context);
@@ -164,10 +166,12 @@ final class _HomescreenState extends State<Homescreen> {
                             child: TextButton(
                               onPressed: () async {
                                 await _bloc!.stamp();
-                                setState(() {});
+                                setState(() {
+                                  _stampedIn = !_stampedIn;
+                                });
                               },
                               child: Text(
-                                _bloc!.stampedIn
+                                _stampedIn
                                     ? 'end work'.tr()
                                     : 'start work'.tr(),
                               ),
