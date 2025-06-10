@@ -294,6 +294,54 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: 'Select time',
     TranslationLocales.german: 'Zeit wählen',
   },
+  'The new password must contain the following:': {
+    TranslationLocales.english: 'The new password must contain the following:',
+    TranslationLocales.german: 'Das neue Passwort muss folgendes enthalten:',
+  },
+  '- 1 capital letter': {
+    TranslationLocales.english: '- 1 capital letter',
+    TranslationLocales.german: '- 1 Großbuchstaben',
+  },
+  '- 1 lowercase letter': {
+    TranslationLocales.english: '- 1 lowercase letter',
+    TranslationLocales.german: '- 1 Kleinbuchstaben',
+  },
+  '- 1 number': {
+    TranslationLocales.english: '- 1 number',
+    TranslationLocales.german: '- 1 Zahl',
+  },
+  '- 1 special character': {
+    TranslationLocales.english: '- 1 special character',
+    TranslationLocales.german: '- 1 Sonderzeichen',
+  },
+  'Show change Password Notification': {
+    TranslationLocales.english: 'Show change Password Notification',
+    TranslationLocales.german: 'Zeige Passwortänderungsbenachrichtigung',
+  },
+  'Password change required': {
+    TranslationLocales.english: 'Password change required',
+    TranslationLocales.german: 'Passwortänderung erforderlich',
+  },
+  'You\'re required to change your password in the next month': {
+    TranslationLocales.english:
+        'You\'re required to change your password in the next month',
+    TranslationLocales.german:
+        'Du musst dein Passwort innerhalb des nächsten Monats ändern',
+  },
+  'Show notification': {
+    TranslationLocales.english: 'Show notification',
+    TranslationLocales.german: 'Benachrichtigung anzeigen',
+  },
+  'Debug Notification': {
+    TranslationLocales.english: 'Debug Notification',
+    TranslationLocales.german: 'Testbenachrichtigung anzeigen',
+  },
+  'This is a debug notification shown to test the plugin': {
+    TranslationLocales.english:
+        'This is a debug notification shown to test the plugin',
+    TranslationLocales.german:
+        'Das ist eine Testbenachrichtigung um das Plugin zu testen',
+  },
 };
 
 HashMap<String, Map<Locale, String>> get translations {

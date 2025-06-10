@@ -56,6 +56,7 @@ void main() async {
     macOS: initializationSettingsDarwin,
     windows: windowsInitializationSettings,
     linux: initializationSettingsLinux,
+    iOS: initializationSettingsDarwin,
   );
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
@@ -100,6 +101,7 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
       if (_bloc!.stampedIn) {
         _bloc!.stamp();
       }
+      Storage.clear();
       setState(() {
         _setLoginScreen();
       });

@@ -19,11 +19,15 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
 
   bool _newPasswordConfirmObscured = true;
 
+  final RegExp regex = RegExp(
+    '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}\$',
+  );
+
   @override
   Widget build(BuildContext context) {
     _bloc ??= BlocParent.of(context);
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 400, maxWidth: 600),
+      constraints: BoxConstraints(maxHeight: 475, maxWidth: 600),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Center(
@@ -68,7 +72,9 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
                 ),
                 obscureText: _oldPasswordObscured,
                 obscuringCharacter: '*',
-                onChanged: (oldPassword) => _bloc!.oldPassword = oldPassword,
+                onChanged:
+                    (oldPassword) =>
+                        setState(() => _bloc!.oldPassword = oldPassword),
               ),
               TextField(
                 enableIMEPersonalizedLearning: false,
@@ -96,7 +102,9 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
                 ),
                 obscureText: _newPasswordObscured,
                 obscuringCharacter: '*',
-                onChanged: (newPassword) => _bloc!.newPassword = newPassword,
+                onChanged:
+                    (newPassword) =>
+                        setState(() => _bloc!.newPassword = newPassword),
               ),
               TextField(
                 enableIMEPersonalizedLearning: false,
@@ -126,14 +134,39 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
                 obscureText: _newPasswordConfirmObscured,
                 obscuringCharacter: '*',
                 onChanged:
-                    (newPasswordConfirm) =>
-                        _bloc!.newPasswordConfirm = newPasswordConfirm,
+                    (newPasswordConfirm) => setState(
+                      () => _bloc!.newPasswordConfirm = newPasswordConfirm,
+                    ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        'The new password must contain the following:'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      Text('- 1 capital letter'.tr()),
+                      Text('- 1 lowercase letter'.tr()),
+                      Text('- 1 number'.tr()),
+                      Text('- 1 special character'.tr()),
+                    ],
+                  ),
+                ],
               ),
               TextButton(
-                onPressed: () {
-                  _bloc!.submit();
-                  Navigator.of(context).pop();
-                },
+                onPressed:
+                    _submitEnabled
+                        ? () {
+                          _bloc!.submit();
+                          Navigator.of(context).pop();
+                        }
+                        : null,
                 child: Text('submit'.tr()),
               ),
             ],
@@ -142,13 +175,12 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
       ),
     );
   }
-}
 
-class LanguageSettingsScreen extends StatelessWidget {
-  const LanguageSettingsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+  bool get _submitEnabled {
+    if (regex.hasMatch(_bloc!.newPassword)) {
+      return _bloc!.newPassword == _bloc!.newPasswordConfirm;
+    } else {
+      return false;
+    }
   }
 }

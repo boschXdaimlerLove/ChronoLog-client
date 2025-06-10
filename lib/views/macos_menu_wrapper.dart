@@ -110,14 +110,41 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
       menus: [
         PlatformMenuItem(
           label: 'Log out'.tr(),
-          onSelected:
-              _isLoggedIn
-                  ? () {
-                    EventBloc.eventStream.sink.add(const LogoutEvent());
-                  }
-                  : null,
+          onSelected: _isLoggedIn ? _showLogoutDialog : null,
         ),
       ],
+    );
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text('log out?'.tr()),
+          content: Text(
+            'Do you really want to log out?\nYou\'ll have to log in again '
+                    'to use the services'
+                .tr(),
+            textAlign: TextAlign.start,
+          ),
+          actions: <TextButton>[
+            TextButton(
+              onPressed: () {
+                EventBloc.eventStream.sink.add(const LogoutEvent());
+                Navigator.of(context).pop();
+              },
+              child: Text('Log out'.tr()),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'.tr()),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -180,12 +207,12 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
       label: 'Debug',
       menus: [
         PlatformMenuItem(
-          label: 'Show notification',
+          label: 'Show notification'.tr(),
           onSelected: () {
             flutterLocalNotificationsPlugin.show(
               UniqueKey().hashCode,
-              'Debug Notification',
-              'This is a debug notification shown to test the plugin',
+              'Debug Notification'.tr(),
+              'This is a debug notification shown to test the plugin'.tr(),
               NotificationDetails(
                 macOS: DarwinNotificationDetails(presentBadge: true),
                 windows: WindowsNotificationDetails(
@@ -198,7 +225,38 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
             );
             EventBloc.eventStream.sink.add(
               NotificationTriggeredEvent(
-                Notification('Debug notification', ('Debugging..')),
+                Notification(
+                  'Debug Notification'.tr(),
+                  'This is a debug notification shown to test the plugin'.tr(),
+                ),
+              ),
+            );
+          },
+        ),
+        PlatformMenuItem(
+          label: 'Show change Password Notification'.tr(),
+          onSelected: () {
+            flutterLocalNotificationsPlugin.show(
+              UniqueKey().hashCode,
+              'Password change required'.tr(),
+              'You\'re required to change your password in the next month'.tr(),
+              NotificationDetails(
+                macOS: DarwinNotificationDetails(presentBadge: true),
+                windows: WindowsNotificationDetails(
+                  duration: WindowsNotificationDuration.long,
+                ),
+                linux: LinuxNotificationDetails(
+                  category: LinuxNotificationCategory.presence,
+                ),
+              ),
+            );
+            EventBloc.eventStream.sink.add(
+              NotificationTriggeredEvent(
+                Notification(
+                  'Password change required'.tr(),
+                  'You\'re required to change your password in the next month'
+                      .tr(),
+                ),
               ),
             );
           },

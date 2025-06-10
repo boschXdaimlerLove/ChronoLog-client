@@ -179,6 +179,10 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
       hint = 'critical'.tr();
       icon = Icons.warning;
       color = Colors.orange;
+    } else if (frame.getWorkingTime().inHours > 10) {
+      hint = 'problematic'.tr();
+      icon = Icons.warning;
+      color = Colors.red;
     } else {
       hint = 'No hint'.tr();
       icon = Icons.hourglass_empty;

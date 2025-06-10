@@ -765,6 +765,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  widget_router:
+    dependency: "direct main"
+    description:
+      name: widget_router
+      sha256: dfcb8d4a862b345b7d8b6c724e9768db3f83c0294bac529b86018d159cb5a2fc
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   xdg_directories:
     dependency: transitive
     description:

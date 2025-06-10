@@ -3,6 +3,7 @@ import 'dart:async' show StreamSubscription;
 import 'package:bloc_implementation/bloc_implementation.dart' show Bloc;
 import 'package:chrono_log/api/server_communication.dart';
 import 'package:chrono_log/blocs/event_bloc.dart';
+import 'package:chrono_log/main.dart';
 import 'package:chrono_log/models/events/change_password_event.dart';
 import 'package:chrono_log/models/events/event.dart';
 import 'package:chrono_log/models/events/login_event.dart';
@@ -70,6 +71,9 @@ final class HomeBloc extends Bloc {
   Future<void> stamp() async {
     if (_stampedIn) {
       _stampedIn = false;
+      if (isMobile) {
+        return;
+      }
       DateTime endTime = await ServerCommunication.endWork(username, password);
       TimeFrame unfinishedFrame = Storage.getLastUnfinishedTimeFrame();
       TimeFrame copy = TimeFrame.unfinished(unfinishedFrame.start);
@@ -77,6 +81,9 @@ final class HomeBloc extends Bloc {
       await Storage.updateUnfinishedTimeFrame(copy);
     } else {
       _stampedIn = true;
+      if (isMobile) {
+        return;
+      }
       DateTime unfinishedStartTime = await ServerCommunication.startWork(
         username,
         password,

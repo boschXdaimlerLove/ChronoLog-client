@@ -131,16 +131,20 @@ final class _HomescreenState extends State<Homescreen> {
           padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
           child: Row(
             children: [
-              Expanded(flex: 1, child: _notificationColumn),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: GestureDetector(
-                  onHorizontalDragUpdate: (details) {
-                    // TODO: implement on drag
-                  },
-                  child: VerticalDivider(thickness: 1.5),
-                ),
-              ),
+              isDesktop
+                  ? Expanded(flex: 1, child: _notificationColumn)
+                  : Container(),
+              isDesktop
+                  ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: GestureDetector(
+                      onHorizontalDragUpdate: (details) {
+                        // TODO: implement on drag
+                      },
+                      child: VerticalDivider(thickness: 1.5),
+                    ),
+                  )
+                  : Container(),
               Expanded(
                 flex: 4,
                 child: LayoutBuilder(

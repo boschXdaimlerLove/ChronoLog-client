@@ -90,4 +90,9 @@ final class Storage {
         frame.start.month == date.month &&
         frame.start.year == date.year;
   }
+
+  static void clear() async {
+    await _frameBox!.clear();
+    await _notificationBox!.clear();
+  }
 }

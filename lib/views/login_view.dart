@@ -84,7 +84,7 @@ final class _LoginViewState extends State<LoginView> {
               Icon(Icons.person, size: 64),
               Spacer(flex: 1),
               SizedBox(
-                width: size.width / 2,
+                width: isMobile ? size.width : size.width / 2,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 64.0,
@@ -113,7 +113,7 @@ final class _LoginViewState extends State<LoginView> {
                 ),
               ),
               SizedBox(
-                width: size.width / 2,
+                width: isMobile ? size.width : size.width / 2,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 64.0,
@@ -190,8 +190,12 @@ final class _LoginViewState extends State<LoginView> {
       }
       correct = true;
     } catch (e) {
-      error = e.toString();
-      correct = false;
+      if (isMobile) {
+        correct = true;
+      } else {
+        error = e.toString();
+        correct = false;
+      }
     }
     if (correct) {
       _bloc!.login(username, password);

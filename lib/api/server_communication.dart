@@ -18,6 +18,9 @@ import 'package:string_translate/string_translate.dart' show Translate;
 /// Communicates with the backend server via API calls
 final class ServerCommunication {
   static void initStatusPolling(final String username, final String password) {
+    if (isMobile) {
+      return;
+    }
     Timer.periodic(Duration(minutes: 1), (_) async {
       http.Response response = await getStatus(username, password);
       String? title;
