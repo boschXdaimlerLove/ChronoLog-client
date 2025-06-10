@@ -91,7 +91,7 @@ final class Storage {
         frame.start.year == date.year;
   }
 
-  static void clear() async {
+  static Future<void> clear() async {
     await _frameBox!.clear();
     await _notificationBox!.clear();
   }

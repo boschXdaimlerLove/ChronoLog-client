@@ -96,12 +96,12 @@ final class _ChronoLogAppState extends State<ChronoLogApp> {
 
   Key _homeKey = UniqueKey();
 
-  void _handleEvents(Event event) {
+  void _handleEvents(Event event) async {
     if (event is LogoutEvent) {
       if (_bloc!.stampedIn) {
         _bloc!.stamp();
       }
-      Storage.clear();
+      await Storage.clear();
       setState(() {
         _setLoginScreen();
       });
