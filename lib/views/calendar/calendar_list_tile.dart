@@ -29,13 +29,7 @@ class _CalendarListTileState extends State<CalendarListTile> {
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(_backgroundColor),
         side: WidgetStatePropertyAll(
-          BorderSide(
-            style: BorderStyle.solid,
-            color:
-                widget.previousMonth
-                    ? Colors.grey.shade50
-                    : Colors.grey.shade300,
-          ),
+          BorderSide(style: BorderStyle.solid, color: _borderColor),
         ),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
@@ -71,30 +65,9 @@ class _CalendarListTileState extends State<CalendarListTile> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Spacer(flex: 2),
-            Text(
-              '${widget.date.day}',
-              style: TextStyle(
-                color:
-                    (widget.date.day == DateTime.now().day &&
-                            widget.date.month == DateTime.now().month &&
-                            widget.date.year == DateTime.now().year)
-                        ? Colors.white
-                        : (widget.previousMonth)
-                        ? Colors.grey.shade400
-                        : Colors.grey.shade900,
-              ),
-            ),
+            Text('${widget.date.day}', style: TextStyle(color: _textColor)),
             _hasDates
-                ? Icon(
-                  Icons.circle,
-                  size: 10,
-                  color:
-                      (widget.date.day == DateTime.now().day &&
-                              widget.date.month == DateTime.now().month &&
-                              widget.date.year == DateTime.now().year)
-                          ? Colors.white
-                          : Colors.grey.shade900,
-                )
+                ? Icon(Icons.circle, size: 10, color: _dotColor)
                 : Container(),
             Spacer(flex: _hasDates ? 1 : 2),
           ],
@@ -103,17 +76,95 @@ class _CalendarListTileState extends State<CalendarListTile> {
     );
   }
 
+  Color get _dotColor {
+    if (Theme.of(context).brightness == Brightness.light) {
+      if (widget.date.day == DateTime.now().day &&
+          widget.date.month == DateTime.now().month &&
+          widget.date.year == DateTime.now().year) {
+        return Colors.white;
+      } else {
+        return Colors.grey.shade900;
+      }
+    } else {
+      if (widget.date.day == DateTime.now().day &&
+          widget.date.month == DateTime.now().month &&
+          widget.date.year == DateTime.now().year) {
+        return Colors.white;
+      } else {
+        return Colors.white70;
+      }
+    }
+  }
+
   Color get _backgroundColor {
     DateTime today = DateTime.now();
     if (widget.previousMonth) {
-      return Colors.grey.shade50;
+      if (Theme.of(context).brightness == Brightness.light) {
+        return Colors.grey.shade50;
+      } else {
+        return Colors.grey.shade500;
+      }
     }
-    if (widget.date.day == today.day &&
-        widget.date.month == today.month &&
-        widget.date.year == today.year) {
-      return Colors.blue.shade500;
+    if (Theme.of(context).brightness == Brightness.light) {
+      if (widget.date.day == today.day &&
+          widget.date.month == today.month &&
+          widget.date.year == today.year) {
+        return Colors.blue.shade500;
+      } else {
+        return Colors.grey.shade100;
+      }
     } else {
-      return Colors.grey.shade100;
+      if (widget.date.day == today.day &&
+          widget.date.month == today.month &&
+          widget.date.year == today.year) {
+        return Colors.blue.shade400;
+      } else {
+        return Colors.grey.shade700;
+      }
+    }
+  }
+
+  Color get _borderColor {
+    if (Theme.of(context).brightness == Brightness.light) {
+      if (widget.previousMonth) {
+        return Colors.grey.shade50;
+      } else {
+        return Colors.grey.shade300;
+      }
+    } else {
+      if (widget.previousMonth) {
+        return Colors.grey.shade400;
+      } else {
+        return Colors.grey.shade500;
+      }
+    }
+  }
+
+  Color get _textColor {
+    if (Theme.of(context).brightness == Brightness.light) {
+      if (widget.date.day == DateTime.now().day &&
+          widget.date.month == DateTime.now().month &&
+          widget.date.year == DateTime.now().year) {
+        return Colors.white;
+      } else {
+        if (widget.previousMonth) {
+          return Colors.grey.shade400;
+        } else {
+          return Colors.grey.shade900;
+        }
+      }
+    } else {
+      if (widget.date.day == DateTime.now().day &&
+          widget.date.month == DateTime.now().month &&
+          widget.date.year == DateTime.now().year) {
+        return Colors.white;
+      } else {
+        if (widget.previousMonth) {
+          return Colors.white70;
+        } else {
+          return Colors.white;
+        }
+      }
     }
   }
 }

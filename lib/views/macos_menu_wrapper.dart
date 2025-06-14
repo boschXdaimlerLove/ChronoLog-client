@@ -10,6 +10,7 @@ import 'package:chrono_log/models/events/notification_triggered_event.dart';
 import 'package:chrono_log/models/notification.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:modern_themes/modern_themes.dart';
 import 'package:string_translate/string_translate.dart'
     show Translate, Translation, TranslationLocales;
 
@@ -195,6 +196,38 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
                         );
                       }
                       : null,
+            ),
+            PlatformMenu(
+              label: 'Change theme'.tr(),
+              menus: [
+                PlatformMenuItem(
+                  label: 'light'.tr(),
+                  onSelected: () {
+                    setState(() {
+                      Themes.changeTheme(ThemeMode.light);
+                      widget.reloadCallback();
+                    });
+                  },
+                ),
+                PlatformMenuItem(
+                  label: 'dark'.tr(),
+                  onSelected: () {
+                    setState(() {
+                      Themes.changeTheme(ThemeMode.dark);
+                      widget.reloadCallback();
+                    });
+                  },
+                ),
+                PlatformMenuItem(
+                  label: 'system'.tr(),
+                  onSelected: () {
+                    setState(() {
+                      Themes.changeTheme(ThemeMode.system);
+                      widget.reloadCallback();
+                    });
+                  },
+                ),
+              ],
             ),
           ],
         ),

@@ -37,7 +37,10 @@ final class _HomescreenState extends State<Homescreen> {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Card(
-              color: Colors.grey.shade100,
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Colors.grey.shade100
+                      : Colors.grey.shade500,
               child: Column(
                 children: [
                   ListTile(
@@ -45,10 +48,7 @@ final class _HomescreenState extends State<Homescreen> {
                     titleTextStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color:
-                          notification.alreadyRead
-                              ? Colors.black54
-                              : Colors.black87,
+                      color: _notificationTextColor(notification),
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 4.0),
@@ -57,10 +57,7 @@ final class _HomescreenState extends State<Homescreen> {
                     subtitleTextStyle: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
-                      color:
-                          notification.alreadyRead
-                              ? Colors.black38
-                              : Colors.black54,
+                      color: _notificationTextColor(notification),
                     ),
                     isThreeLine: true,
                   ),
@@ -71,6 +68,22 @@ final class _HomescreenState extends State<Homescreen> {
           );
         },
       );
+    }
+  }
+
+  Color _notificationTextColor(Notification notification) {
+    if (Theme.of(context).brightness == Brightness.light) {
+      if (notification.alreadyRead) {
+        return Colors.black38;
+      } else {
+        return Colors.black54;
+      }
+    } else {
+      if (notification.alreadyRead) {
+        return Colors.white60;
+      } else {
+        return Colors.white;
+      }
     }
   }
 

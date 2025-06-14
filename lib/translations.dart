@@ -342,6 +342,22 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.german:
         'Das ist eine Testbenachrichtigung um das Plugin zu testen',
   },
+  'Change theme': {
+    TranslationLocales.english: 'Change theme',
+    TranslationLocales.german: 'Thema ändern',
+  },
+  'light': {
+    TranslationLocales.english: 'light',
+    TranslationLocales.german: 'Hell',
+  },
+  'dark': {
+    TranslationLocales.english: 'dark',
+    TranslationLocales.german: 'Dunkel',
+  },
+  'system': {
+    TranslationLocales.english: 'system',
+    TranslationLocales.german: 'System',
+  },
 };
 
 HashMap<String, Map<Locale, String>> get translations {
