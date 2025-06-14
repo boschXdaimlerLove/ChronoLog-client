@@ -93,6 +93,10 @@ final class Storage {
 
   static Future<void> clear() async {
     await _frameBox!.clear();
+    _frameList.clear();
     await _notificationBox!.clear();
+    _notificationList.clear();
+    await _frameBox!.flush();
+    await _notificationBox!.flush();
   }
 }
