@@ -74,7 +74,9 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                           children: [
                             DecoratedBox(
                               decoration: BoxDecoration(
-                                color: Colors.grey.shade400,
+                                border: BoxBorder.all(
+                                  color: Colors.grey.shade400,
+                                ),
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -87,9 +89,11 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                             ),
                             DecoratedBox(
                               decoration: BoxDecoration(
-                                color: Colors.grey.shade400,
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.circular(16),
+                                border: BoxBorder.all(
+                                  color: Colors.grey.shade400,
+                                ),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
@@ -108,7 +112,9 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                           children: [
                             DecoratedBox(
                               decoration: BoxDecoration(
-                                color: Colors.grey.shade400,
+                                border: BoxBorder.all(
+                                  color: Colors.grey.shade400,
+                                ),
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -142,6 +148,14 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
           mainAxisSize: MainAxisSize.max,
           children: [
             TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.indigo.shade50,
+                foregroundColor: Colors.indigo.shade600,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 showDialog(
@@ -190,7 +204,7 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
     }
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color,
+        border: BoxBorder.all(color: color),
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(16),
       ),

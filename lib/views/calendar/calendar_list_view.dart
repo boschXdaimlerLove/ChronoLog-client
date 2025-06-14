@@ -56,6 +56,17 @@ final class _CalendarListViewState extends State<CalendarListView> {
                       style: TextStyle(fontSize: 24),
                     ),
                     TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.indigo.shade50,
+                        foregroundColor: Colors.indigo.shade600,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                       onPressed: () {
                         setState(() {
                           _bloc!.jumpToToday();
@@ -97,8 +108,8 @@ final class _CalendarListViewState extends State<CalendarListView> {
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+              //crossAxisSpacing: 12,
+              //mainAxisSpacing: 12,
               childAspectRatio: 2,
               mainAxisExtent: 70,
             ),

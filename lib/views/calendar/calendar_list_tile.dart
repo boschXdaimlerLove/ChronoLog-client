@@ -33,8 +33,8 @@ class _CalendarListTileState extends State<CalendarListTile> {
             style: BorderStyle.solid,
             color:
                 widget.previousMonth
-                    ? Colors.teal.shade100
-                    : Colors.teal.shade400,
+                    ? Colors.grey.shade50
+                    : Colors.grey.shade300,
           ),
         ),
         shape: WidgetStatePropertyAll(
@@ -58,7 +58,11 @@ class _CalendarListTileState extends State<CalendarListTile> {
               ),
             );
           },
-        );
+        ).then((_) {
+          setState(() {
+            _hasDates = Storage.getFramesForDay(widget.date).isNotEmpty;
+          });
+        });
       },
       child: Center(
         child: Column(
@@ -67,8 +71,31 @@ class _CalendarListTileState extends State<CalendarListTile> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Spacer(flex: 2),
-            Text('${widget.date.day}'),
-            _hasDates ? Icon(Icons.circle, size: 10) : Container(),
+            Text(
+              '${widget.date.day}',
+              style: TextStyle(
+                color:
+                    (widget.date.day == DateTime.now().day &&
+                            widget.date.month == DateTime.now().month &&
+                            widget.date.year == DateTime.now().year)
+                        ? Colors.white
+                        : (widget.previousMonth)
+                        ? Colors.grey.shade400
+                        : Colors.grey.shade900,
+              ),
+            ),
+            _hasDates
+                ? Icon(
+                  Icons.circle,
+                  size: 10,
+                  color:
+                      (widget.date.day == DateTime.now().day &&
+                              widget.date.month == DateTime.now().month &&
+                              widget.date.year == DateTime.now().year)
+                          ? Colors.white
+                          : Colors.grey.shade900,
+                )
+                : Container(),
             Spacer(flex: _hasDates ? 1 : 2),
           ],
         ),
@@ -79,14 +106,14 @@ class _CalendarListTileState extends State<CalendarListTile> {
   Color get _backgroundColor {
     DateTime today = DateTime.now();
     if (widget.previousMonth) {
-      return Colors.teal.shade50;
+      return Colors.grey.shade50;
     }
     if (widget.date.day == today.day &&
         widget.date.month == today.month &&
         widget.date.year == today.year) {
-      return Colors.teal.shade300;
+      return Colors.blue.shade500;
     } else {
-      return Colors.teal.shade100;
+      return Colors.grey.shade100;
     }
   }
 }

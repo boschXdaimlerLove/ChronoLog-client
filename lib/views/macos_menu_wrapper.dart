@@ -131,16 +131,16 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
           actions: <TextButton>[
             TextButton(
               onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'.tr()),
+            ),
+            TextButton(
+              onPressed: () {
                 EventBloc.eventStream.sink.add(const LogoutEvent());
                 Navigator.of(context).pop();
               },
               child: Text('Log out'.tr()),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'.tr()),
             ),
           ],
         );

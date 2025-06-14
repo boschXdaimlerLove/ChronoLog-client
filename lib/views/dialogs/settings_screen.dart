@@ -20,7 +20,7 @@ final class _PasswordSettingsScreenState extends State<PasswordSettingsScreen> {
   bool _newPasswordConfirmObscured = true;
 
   final RegExp regex = RegExp(
-    '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}\$',
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$',
   );
 
   @override

@@ -49,7 +49,7 @@ void main() async {
       WindowsInitializationSettings(
         appName: 'ChronoLog',
         appUserModelId: 'edu.jules.bachelor.chronolog',
-        guid: UniqueKey().toString(),
+        guid: '5c1e7777-76aa-4b9e-b127-7d60b188210d',
         iconPath: 'assets/app_icon.png',
       );
   final InitializationSettings initializationSettings = InitializationSettings(

@@ -36,20 +36,8 @@ final class _HomescreenState extends State<Homescreen> {
           final Notification notification = _bloc!.notifications[counter];
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: BoxBorder.all(
-                  color:
-                      notification.alreadyRead
-                          ? Colors.teal.shade100
-                          : Colors.teal.shade400,
-                  style: BorderStyle.solid,
-                ),
-                color:
-                    notification.alreadyRead
-                        ? Colors.teal.shade50
-                        : Colors.teal.shade100,
-              ),
+            child: Card(
+              color: Colors.grey.shade100,
               child: Column(
                 children: [
                   ListTile(
@@ -88,19 +76,39 @@ final class _HomescreenState extends State<Homescreen> {
 
   Row _notificationsActionsForNotification(Notification notification) {
     List<TextButton> actions = [];
-    if (!notification.alreadyRead) {
-      actions.add(
-        TextButton(
-          onPressed:
-              () => setState(() {
-                notification.read();
-              }),
-          child: Text('read'.tr()),
-        ),
-      );
-    }
     actions.add(
       TextButton(
+        style: TextButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: EdgeInsets.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          backgroundColor: Colors.transparent,
+        ),
+        onPressed:
+            !notification.alreadyRead
+                ? () => setState(() {
+                  notification.read();
+                })
+                : null,
+        child: Text(
+          'read'.tr(),
+          style: TextStyle(
+            color:
+                notification.alreadyRead
+                    ? Colors.transparent
+                    : Colors.indigo.shade600,
+          ),
+        ),
+      ),
+    );
+    actions.add(
+      TextButton(
+        style: TextButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: EdgeInsets.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          backgroundColor: Colors.transparent,
+        ),
         onPressed:
             () => setState(() {
               _bloc!.deleteNotification(notification);
@@ -168,6 +176,17 @@ final class _HomescreenState extends State<Homescreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.indigo.shade50,
+                                foregroundColor: Colors.indigo.shade600,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
                               onPressed: () async {
                                 await _bloc!.stamp();
                                 setState(() {
