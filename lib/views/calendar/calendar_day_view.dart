@@ -8,7 +8,9 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:string_translate/string_translate.dart' show Translate;
 
 final class CalendarDayView extends StatefulWidget {
-  const CalendarDayView({super.key});
+  const CalendarDayView(this.reloadCallback, {super.key});
+
+  final Function() reloadCallback;
 
   @override
   State<CalendarDayView> createState() => _CalendarDayViewState();
@@ -18,6 +20,12 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
   CalendarDayBloc? _bloc;
 
   List<TimeFrame>? _frames;
+
+  @override
+  void setState(VoidCallback fn) {
+    widget.reloadCallback();
+    super.setState(fn);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +170,10 @@ final class _CalendarDayViewState extends State<CalendarDayView> {
                   context: context,
                   builder: (_) {
                     return Dialog(
-                      child: BlocParent(bloc: _bloc!, child: AddTimesScreen()),
+                      child: BlocParent(
+                        bloc: _bloc!,
+                        child: AddTimesScreen(widget.reloadCallback),
+                      ),
                     );
                   },
                 );

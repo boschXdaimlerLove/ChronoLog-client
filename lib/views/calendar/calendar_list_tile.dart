@@ -37,8 +37,8 @@ class _CalendarListTileState extends State<CalendarListTile> {
           ),
         ),
       ),
-      onPressed: () {
-        showDialog(
+      onPressed: () async {
+        await showDialog(
           context: context,
           builder: (_) {
             return Dialog(
@@ -48,15 +48,15 @@ class _CalendarListTileState extends State<CalendarListTile> {
                   username: _bloc!.username,
                   password: _bloc!.password,
                 ),
-                child: CalendarDayView(),
+                child: CalendarDayView(() {
+                  setState(() {
+                    _hasDates = Storage.getFramesForDay(widget.date).isNotEmpty;
+                  });
+                }),
               ),
             );
           },
-        ).then((_) {
-          setState(() {
-            _hasDates = Storage.getFramesForDay(widget.date).isNotEmpty;
-          });
-        });
+        );
       },
       child: Center(
         child: Column(

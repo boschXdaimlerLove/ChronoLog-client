@@ -8,7 +8,9 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:string_translate/string_translate.dart' show Translate;
 
 class AddTimesScreen extends StatefulWidget {
-  const AddTimesScreen({super.key});
+  const AddTimesScreen(this.reloadCallback, {super.key});
+
+  final Function() reloadCallback;
 
   @override
   State<AddTimesScreen> createState() => _AddTimesScreenState();
@@ -156,6 +158,7 @@ class _AddTimesScreenState extends State<AddTimesScreen> {
       Storage.storeNewTime(frame);
     }
     Navigator.of(context).pop();
+    widget.reloadCallback();
   }
 }
 
