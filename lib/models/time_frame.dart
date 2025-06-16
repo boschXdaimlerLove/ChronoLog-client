@@ -36,7 +36,14 @@ final class TimeFrame {
   }
 
   Duration getWorkingTime() {
-    return end?.difference(start) ?? DateTime.now().difference(start);
+    return end?.difference(start) ??
+        DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+          DateTime.now().hour + 2,
+          DateTime.now().minute + 1,
+        ).difference(start);
   }
 
   String getWorkingTimeRepresentation() {

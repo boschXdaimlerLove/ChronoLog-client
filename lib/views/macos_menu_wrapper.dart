@@ -91,9 +91,13 @@ class _MacosMenuWrapperState extends State<MacosMenuWrapper> {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Divider(),
                     ),
-                    Text('More information', style: TextStyle(fontSize: 18)),
                     Text(
-                      'This software is only developed for a project for the bachelor of science on the DHBW Stuttgart.\nIt is not applicable for commercial use.',
+                      'More information'.tr(),
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      'This software is only developed for a project for the bachelor of science on the DHBW Stuttgart.\nIt is not applicable for commercial use.'
+                          .tr(),
                     ),
                   ],
                 );

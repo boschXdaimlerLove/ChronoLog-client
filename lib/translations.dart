@@ -358,6 +358,36 @@ Map<String, Map<Locale, String>> _translations = {
     TranslationLocales.english: 'system',
     TranslationLocales.german: 'System',
   },
+  'Confirm new password': {
+    TranslationLocales.english: 'Confirm new password',
+    TranslationLocales.german: 'Neues Passwort bestätigen',
+  },
+  'This software is only developed for a project for the bachelor of science on the DHBW Stuttgart.\nIt is not applicable for commercial use.': {
+    TranslationLocales.english:
+        'This software is only developed for a project for the bachelor of science on the DHBW Stuttgart.\nIt is not applicable for commercial use.',
+    TranslationLocales.german:
+        'Diese Software wurde ausschließlich für ein Projekt des Bachelors an der DHBW Stuttgart entwickelt. Es ist nicht für den komerziellen Nutzen freigegeben',
+  },
+  'More information': {
+    TranslationLocales.english: 'More information',
+    TranslationLocales.german: 'Mehr Informationen',
+  },
+  'all good': {
+    TranslationLocales.english: 'all good',
+    TranslationLocales.german: 'alles gut',
+  },
+  'problematic': {
+    TranslationLocales.english: 'promlematic',
+    TranslationLocales.german: 'problematisch',
+  },
+  'critical': {
+    TranslationLocales.english: 'critical',
+    TranslationLocales.german: 'kritisch',
+  },
+  'No hint': {
+    TranslationLocales.english: 'No hint',
+    TranslationLocales.german: 'Kein Hinweis',
+  },
 };
 
 HashMap<String, Map<Locale, String>> get translations {

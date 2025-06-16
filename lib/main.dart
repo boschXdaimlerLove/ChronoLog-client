@@ -67,6 +67,8 @@ bool get isWindowsOrLinux {
   return Platform.isWindows || Platform.isLinux;
 }
 
+bool isStampedIn = false;
+
 bool get isMacOS {
   return Platform.isMacOS;
 }

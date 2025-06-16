@@ -71,6 +71,7 @@ final class HomeBloc extends Bloc {
   Future<void> stamp() async {
     if (_stampedIn) {
       _stampedIn = false;
+      isStampedIn = false;
       if (isMobile) {
         return;
       }
@@ -81,6 +82,7 @@ final class HomeBloc extends Bloc {
       await Storage.updateUnfinishedTimeFrame(copy);
     } else {
       _stampedIn = true;
+      isStampedIn = true;
       if (isMobile) {
         return;
       }

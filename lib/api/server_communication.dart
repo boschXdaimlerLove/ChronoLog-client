@@ -22,6 +22,9 @@ final class ServerCommunication {
       return;
     }
     Timer.periodic(Duration(minutes: 1), (_) async {
+      if (!isStampedIn) {
+        return;
+      }
       http.Response response = await getStatus(username, password);
       String? title;
       String? message;
